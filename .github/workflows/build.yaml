@@ -123,7 +123,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          macOS_zip_path: ${{ steps.macOS-latest.outputs.macOS_zip_path }}
+          macOS_zip_path: ${{ needs.macOS-latest.outputs.macOS_zip_path }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ macOS_zip_path }}
