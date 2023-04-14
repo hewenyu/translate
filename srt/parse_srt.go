@@ -62,7 +62,6 @@ func (p *SrtParser) Parse() error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(text, dataType)
 		switch dataType {
 		case SrtContentNum:
 			// 这个字幕有序号
