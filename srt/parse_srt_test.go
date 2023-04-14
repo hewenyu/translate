@@ -24,6 +24,9 @@ func TestParseSrt(t *testing.T) {
 	translateFactor := auzer.NewAuzerTranslator(resourceKey, endpoint, region)
 	srtTranslator := NewSrtTranslator(filePath, "zh", "en", translateFactor, true)
 
-	srtTranslator.Translate()
+	err := srtTranslator.Translate()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 }
