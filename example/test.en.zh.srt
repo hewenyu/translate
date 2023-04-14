@@ -1,0 +1,1610 @@
+1
+00:00:00,000 --> 00:00:08,160
+Alright, in this video, I'm going to look at the paper, Generative Agents, Interactive Simulcra of Humanity.
+好的，在这个视频中，我将看看论文，生成代理，人类的交互式模拟。
+
+2
+00:00:08,160 --> 00:00:10,160
+So what I'm going to do is go through the paper.
+所以我要做的是浏览论文。
+
+3
+00:00:10,160 --> 00:00:13,760
+I'm also going to reproduce some of this in GPT-4.
+我还将在 GPT-4 中重现其中的一些内容。
+
+4
+00:00:13,760 --> 00:00:17,840
+And we're going to have a look at how you would do these Generative Agents, etc.
+我们将看看您将如何做这些生成代理等。
+
+5
+00:00:17,840 --> 00:00:22,600
+Using some of the ideas from the paper if you wanted to do it yourself.
+如果您想自己做，请使用论文中的一些想法。
+
+6
+00:00:22,600 --> 00:00:32,680
+So this paper is all about creating autonomous agents that can at least have the illusion of thinking.
+因此，这篇论文是关于创建至少可以具有思维错觉的自主代理。
+
+7
+00:00:32,680 --> 00:00:41,000
+So actually Simulcra is creating like likenesses or a reflection, a representation of human behavior in here.
+所以实际上Simulcra正在创造类似的相似或反射，在这里表现人类行为。
+
+8
+00:00:41,000 --> 00:00:43,000
+And that's what they're trying to create in here.
+这就是他们试图在这里创造的东西。
+
+9
+00:00:43,000 --> 00:00:45,200
+And they do it with a very nice little game.
+他们用一个非常好的小游戏来做到这一点。
+
+10
+00:00:45,200 --> 00:00:47,080
+So we'll have a look at the game as well.
+所以我们也会看看游戏。
+
+11
+00:00:47,080 --> 00:00:50,800
+They've put up a demo online where you can actually watch what's going on,
+他们在网上放了一个演示，你可以实际观看正在发生的事情，
+
+12
+00:00:50,800 --> 00:00:56,120
+see the different agents, and there's 25 of these agents going at a time.
+查看不同的代理，一次有 25 个这样的代理。
+
+13
+00:00:56,120 --> 00:00:57,880
+And we can also see what they're doing.
+我们也可以看到他们在做什么。
+
+14
+00:00:57,880 --> 00:00:59,880
+So we can see a lot of them are asleep.
+所以我们可以看到他们中的很多人都睡着了。
+
+15
+00:00:59,880 --> 00:01:03,560
+If we click on one of them, it'll take us to where they are.
+如果我们点击其中一个，它会把我们带到他们所在的地方。
+
+16
+00:01:03,560 --> 00:01:05,560
+And we can actually watch what they're doing.
+我们实际上可以观察他们在做什么。
+
+17
+00:01:05,560 --> 00:01:10,320
+We can also see their current action here and the details about them.
+我们还可以看到他们当前的行动 这里 以及有关他们的详细信息。
+
+18
+00:01:10,320 --> 00:01:15,360
+This is very cool because it's doing 25 different agents at a time.
+这非常酷，因为它一次做25个不同的代理。
+
+19
+00:01:15,360 --> 00:01:19,400
+But really it's come up with a system for doing many agents.
+但实际上，它提出了一个可以做许多代理的系统。
+
+20
+00:01:19,400 --> 00:01:23,680
+So I don't see why this couldn't be scaled up to even a lot more agents.
+所以我不明白为什么这不能扩展到更多的代理。
+
+21
+00:01:23,680 --> 00:01:28,400
+The only limitations are the pinging the large language model, etc.
+唯一的限制是 ping 大型语言模型等。
+
+22
+00:01:28,400 --> 00:01:31,640
+So let's jump in and have a look at what this is and how it's doing.
+因此，让我们跳进去看看这是什么以及它是如何做的。
+
+23
+00:01:31,640 --> 00:01:34,640
+I'll point out that so these are the authors up here.
+我要指出的是，这些是这里的作者。
+
+24
+00:01:34,640 --> 00:01:37,640
+Percy Leung is probably the supervisor, I'm guessing.
+Percy Leung可能是主管，我猜。
+
+25
+00:01:37,640 --> 00:01:42,520
+On this, he was also on the Alpaca paper and many other things that have come out of Stanford.
+在这一点上，他还在羊驼纸和斯坦福大学的许多其他东西上。
+
+26
+00:01:42,520 --> 00:01:46,080
+Some of Google research people also on this paper.
+一些谷歌研究人员也对这篇论文感兴趣。
+
+27
+00:01:46,080 --> 00:01:53,920
+So they basically are setting out to create a way to make a simulation of human behavior
+因此，他们基本上正在着手创建一种模拟人类行为的方法。
+
+28
+00:01:53,920 --> 00:01:59,200
+and interactivity between humans and objects and humans and other humans here.
+以及人类与物体以及人类与其他人之间的互动性。
+
+29
+00:01:59,200 --> 00:02:02,520
+To do that, they've created this sort of game world.
+为了做到这一点，他们创造了这种游戏世界。
+
+30
+00:02:02,520 --> 00:02:07,680
+And while the game world is quite nice for us to be able to see it, it's not the coolest thing.
+虽然游戏世界对我们来说非常好，但这并不是最酷的事情。
+
+31
+00:02:07,680 --> 00:02:11,040
+By far, how they've actually put it all together is really good.
+到目前为止，他们实际上如何将它们放在一起真的很好。
+
+32
+00:02:11,040 --> 00:02:15,720
+So they refer to this as the interactive sandbox environment that they've got going on here.
+所以他们把这个称为他们在这里进行的交互式沙盒环境。
+
+33
+00:02:15,720 --> 00:02:22,400
+So what they're basically doing is getting these generative agents and creating an architecture
+所以他们基本上要做的是获得这些生成代理并创建一个架构。
+
+34
+00:02:22,400 --> 00:02:28,920
+that allows them to use large language models to store records of memory, experience,
+这允许他们使用大型语言模型来存储记忆、经验、
+
+35
+00:02:28,920 --> 00:02:36,640
+and then to synthesize from those actions and planning that they can take for actions in the future.
+然后从这些行动和计划中综合起来，他们可以在未来采取行动。
+
+36
+00:02:36,640 --> 00:02:42,440
+And it turns out that this works really well and brings out a lot of really interesting traits
+事实证明，这非常有效，并带出了很多非常有趣的特征
+
+37
+00:02:42,440 --> 00:02:46,520
+both in what they do and also how it's done.
+无论是他们做什么还是怎么做。
+
+38
+00:02:46,520 --> 00:02:52,720
+So one of the examples is that one of the agents comes up with the idea of a Valentine's Day party
+所以一个例子是，其中一位经纪人提出了情人节派对的想法。
+
+39
+00:02:52,720 --> 00:02:57,120
+and starts to spread that through conversation to other agents.
+并开始通过对话将其传播给其他代理。
+
+40
+00:02:57,120 --> 00:03:02,120
+And then the idea of that party gets spread right across the simulation
+然后那个派对的想法在整个模拟中传播开来。
+
+41
+00:03:02,120 --> 00:03:07,720
+and people actually end up showing up for this party that they've created themselves.
+人们最终会出现在他们自己创建的这个派对上。
+
+42
+00:03:07,720 --> 00:03:10,440
+So you go through a quite in-depth in the paper.
+所以你在论文中进行了相当深入的介绍。
+
+43
+00:03:10,440 --> 00:03:12,880
+I'm not going to go through everything in the paper,
+我不会在论文中浏览所有内容，
+
+44
+00:03:12,880 --> 00:03:15,800
+but we're going to look at some of the key things that are going on here.
+但是我们将看看这里正在发生的一些关键事情。
+
+45
+00:03:15,800 --> 00:03:21,920
+The idea here is that to enable these generative agents, they make this agent architecture.
+这里的想法是，为了启用这些生成代理，他们制作了这种代理体系结构。
+
+46
+00:03:21,920 --> 00:03:26,320
+And this architecture basically stores memories, synthesizes things,
+而这个架构基本上是存储记忆，合成东西，
+
+47
+00:03:26,320 --> 00:03:32,840
+and applies these relevant memories to generate believable behavior using a large language model.
+并应用这些相关记忆，使用大型语言模型生成可信的行为。
+
+48
+00:03:32,840 --> 00:03:35,560
+They talk about their architecture comprising of three parts,
+他们谈论他们的架构由三个部分组成，
+
+49
+00:03:35,560 --> 00:03:41,200
+the memory stream, which we'll look at, the long-term memory module, and the natural language parts,
+记忆流，我们将看到，长期记忆模块和自然语言部分，
+
+50
+00:03:41,200 --> 00:03:48,080
+which we'll also look at, and we'll try to recreate in GPT-4, just through playing around with this as well.
+我们也将研究它，我们将尝试在 GPT-4 中重新创建，只是通过玩这个。
+
+51
+00:03:48,080 --> 00:03:50,240
+They've also got a bunch of retrieval models.
+他们还有一堆检索模型。
+
+52
+00:03:50,240 --> 00:03:53,160
+And then that's all in the first part.
+然后这就是第一部分的全部内容。
+
+53
+00:03:53,160 --> 00:03:56,480
+Then they've got this really interesting idea of reflection.
+然后他们有了这个非常有趣的反思想法。
+
+54
+00:03:56,480 --> 00:04:00,920
+So if you're a fan of Westworld, one of the whole themes in Westworld
+所以如果你是西部世界的粉丝，这是西部世界的全部主题之一
+
+55
+00:04:00,920 --> 00:04:07,080
+was this idea of these agents reflecting back on their own memories and their own experiences.
+是这些特工反思自己的记忆和自己的经历的想法。
+
+56
+00:04:07,080 --> 00:04:11,080
+And that's kind of what this is doing, maybe not in the same way as Westworld.
+这就是它正在做的事情，也许与《西部世界》的方式不同。
+
+57
+00:04:11,080 --> 00:04:18,080
+But they've got this reflection idea, which synthesizes memories into higher-level inferences over time.
+但他们有这个反思的想法，随着时间的推移，它将记忆合成成更高层次的推理。
+
+58
+00:04:18,080 --> 00:04:21,440
+And you could argue that's something that humans actually do.
+你可以说这是人类实际做的事情。
+
+59
+00:04:21,440 --> 00:04:26,480
+We take in what we see day to day, we then kind of chunk it together,
+我们吸收我们每天看到的东西，然后我们把它分成几块，
+
+60
+00:04:26,480 --> 00:04:31,720
+and we basically get it to a point where if I ask you to describe a day from last week,
+我们基本上把它弄到一个地步，如果我让你描述上周的一天，
+
+61
+00:04:31,720 --> 00:04:34,840
+you're probably not going to remember all the details, but you'll remember that,
+你可能不会记住所有的细节，但你会记住，
+
+62
+00:04:34,840 --> 00:04:40,720
+"Oh, yeah, I got in my car, I drove to this place, I met this person," those sorts of things.
+“哦，是的，我上了车，我开车去了这个地方，我遇到了这个人，”诸如此类的事情。
+
+63
+00:04:40,720 --> 00:04:42,760
+So that's sort of the higher-level stuff.
+所以这是更高层次的东西。
+
+64
+00:04:42,760 --> 00:04:45,920
+And the third thing that they're really aiming at is this planning,
+他们真正瞄准的第三件事是这个计划，
+
+65
+00:04:45,920 --> 00:04:51,280
+which the idea of here is to basically take some of these conclusions that they've come up with
+这里的想法基本上是采取他们提出的一些结论
+
+66
+00:04:51,280 --> 00:04:55,040
+and plan out actions that they can take with this.
+并计划他们可以采取的行动。
+
+67
+00:04:55,040 --> 00:04:59,360
+Again, the generative agents is what you're seeing in the game.
+同样，生成代理就是你在游戏中看到的。
+
+68
+00:04:59,360 --> 00:05:05,040
+For me, by far the more interesting part is actually the architecture that they've come up with to do this.
+对我来说，到目前为止，更有趣的部分实际上是他们想出的架构。
+
+69
+00:05:05,040 --> 00:05:10,760
+They also go into some evaluation stuff, which I won't go into the video to how they evaluate it.
+他们还进入了一些评估内容，我不会进入视频中他们如何评估它。
+
+70
+00:05:10,760 --> 00:05:16,480
+So they talk a little bit about different forms of believable proxies for human behavior,
+所以他们谈论了人类行为的不同形式的可信代理，
+
+71
+00:05:16,480 --> 00:05:18,880
+what sort of come before for this kind of thing.
+这种事情以前是什么样的。
+
+72
+00:05:18,880 --> 00:05:22,160
+And people have tried some ideas like this using RL,
+人们已经使用RL尝试了一些这样的想法，
+
+73
+00:05:22,160 --> 00:05:27,000
+and they point out Alpha Star for Starcraft, the OpenAI5 for Dota,
+他们指出星际争霸的Alpha Star，Dota的OpenAI5，
+
+74
+00:05:27,000 --> 00:05:29,400
+but they point out that those things are much more adversarial,
+但他们指出，这些事情更具对抗性，
+
+75
+00:05:29,400 --> 00:05:33,000
+where you're trying to kill the opponent playing this game or something like that.
+你试图杀死玩这个游戏或类似游戏的对手的地方。
+
+76
+00:05:33,000 --> 00:05:37,760
+Whereas here, they're looking much more for collaborative sort of things
+而在这里，他们正在寻找更多的协作性的东西。
+
+77
+00:05:37,760 --> 00:05:41,840
+and more natural human behavior coming out of this.
+以及由此产生的更自然的人类行为。
+
+78
+00:05:41,840 --> 00:05:45,520
+Another example of where people have done something like this in the past
+另一个例子是人们过去做过这样的事情
+
+79
+00:05:45,520 --> 00:05:51,080
+was came out of Salesforce, where they actually tried to get an AI with RL
+来自Salesforce，他们实际上试图通过RL获得AI。
+
+80
+00:05:51,080 --> 00:05:55,680
+to manage a simulated economy, which was also very interesting.
+管理模拟经济，这也非常有趣。
+
+81
+00:05:55,680 --> 00:06:00,280
+And I do wonder if the next step for some of this is to start going in that direction
+我确实想知道其中一些的下一步是否是开始朝着这个方向发展。
+
+82
+00:06:00,280 --> 00:06:02,920
+with the framework that these people have created.
+与这些人创建的框架。
+
+83
+00:06:02,920 --> 00:06:05,640
+So you can see that this is their mock world.
+所以你可以看到这是他们的模拟世界。
+
+84
+00:06:05,640 --> 00:06:07,400
+It's got a bunch of things like a park.
+它有一堆东西，比如一个公园。
+
+85
+00:06:07,400 --> 00:06:11,280
+It's got places that people can go to in their houses.
+它有人们可以在他们的房子里去的地方。
+
+86
+00:06:11,280 --> 00:06:14,800
+It's got different parts in the house so people can move around.
+房子里有不同的部分，所以人们可以四处走动。
+
+87
+00:06:14,800 --> 00:06:19,880
+The generative agents can move around, can interact in these locations.
+生成代理可以四处移动，可以在这些位置相互作用。
+
+88
+00:06:19,880 --> 00:06:27,640
+All right, so you can see first off, they talk about creating this idea of creating the agent.
+好的，所以你可以看到首先，他们谈论创建这个创建代理的想法。
+
+89
+00:06:27,640 --> 00:06:32,440
+So they give an example here of a prompt to create an agent.
+因此，他们在这里给出了一个提示创建代理的示例。
+
+90
+00:06:32,440 --> 00:06:38,880
+And this is sort of key to a lot of this is that what they will do is create the agents
+这是很多关键，他们将要做的是创建代理。
+
+91
+00:06:38,880 --> 00:06:43,200
+and then they have like a time step in the game.
+然后他们在游戏中有一个时间步。
+
+92
+00:06:43,200 --> 00:06:48,480
+So at every increment of time in the game, they ask each agent,
+因此，在游戏中的每一个增量时间，他们都会问每个代理，
+
+93
+00:06:48,480 --> 00:06:53,000
+what are you doing, both what are you thinking and what action are you taking?
+你在做什么，你在想什么，你在做什么行动？
+
+94
+00:06:53,000 --> 00:06:56,520
+And if they're in a conversation, what's the conversation, that kind of thing.
+如果他们在对话，对话是什么，诸如此类。
+
+95
+00:06:56,520 --> 00:07:01,120
+So just to sort of show you an example of this, let's look at GPT-4,
+所以为了向你展示一个例子，让我们看看 GPT-4，
+
+96
+00:07:01,120 --> 00:07:04,480
+where I've done the same kind of thing that we can look at here.
+我做了同样的事情，我们可以在这里看到。
+
+97
+00:07:04,480 --> 00:07:10,280
+So we basically got your AI behind an NPC game character called David Bourne.
+所以我们基本上让你的人工智能支持一个叫做大卫伯恩的NPC游戏角色。
+
+98
+00:07:10,280 --> 00:07:14,880
+Now, this prompt I've just put in there, I'm sure their prompts are probably much nicer.
+现在，我刚刚放在那里的这个提示，我相信他们的提示可能更好。
+
+99
+00:07:14,880 --> 00:07:18,080
+And unfortunately, I don't think they've published all their prompts.
+不幸的是，我认为他们没有发布所有的提示。
+
+100
+00:07:18,080 --> 00:07:21,880
+But then we can take an example description like what they have done.
+但是，我们可以举一个示例描述，例如他们所做的。
+
+101
+00:07:21,880 --> 00:07:23,800
+And so here I've created this character.
+所以在这里，我创造了这个角色。
+
+102
+00:07:23,800 --> 00:07:28,520
+I've used some of their description from some of the other people in there.
+我使用了他们从其他一些人那里得到的一些描述。
+
+103
+00:07:28,520 --> 00:07:30,080
+But I've met a new character, right?
+但是我遇到了一个新角色，对吧？
+
+104
+00:07:30,080 --> 00:07:36,000
+David Bourne is a restaurateur at the Jason Sushi restaurant on Brunswick Street, Fitzroy.
+大卫·伯恩（David Bourne）是菲茨罗伊（Fitzroy）不伦瑞克街（Brunswick Street）杰森寿司餐厅（Jason Sushi restaurant）的餐馆老板。
+
+105
+00:07:36,000 --> 00:07:41,240
+And he's always looking to make the process of running his business easier for his customers.
+他一直在寻求让客户更容易经营业务的过程。
+
+106
+00:07:41,240 --> 00:07:43,000
+So we can see a little bit about him.
+所以我们可以看到一些关于他的信息。
+
+107
+00:07:43,000 --> 00:07:44,240
+He's married.
+他结婚了。
+
+108
+00:07:44,240 --> 00:07:45,720
+We've got what his wife does.
+我们有他妻子的所作所为。
+
+109
+00:07:45,720 --> 00:07:49,760
+We've got his his child here, what they're studying.
+我们把他的孩子带到了这里，他们正在学习什么。
+
+110
+00:07:49,760 --> 00:07:53,560
+And we can see also his relationships with other people in there.
+我们也可以看到他与其他人的关系。
+
+111
+00:07:53,560 --> 00:07:59,800
+So then what I basically have done is set this up so that each time step I enter the command, new time step.
+因此，我基本上所做的就是设置它，以便每个时间步长我都输入命令，新的时间步长。
+
+112
+00:07:59,800 --> 00:08:06,480
+I want you to list the time of day and the action that David Bourne is taking in this conversation.
+我希望你列出一天中的时间和大卫·伯恩在这次谈话中采取的行动。
+
+113
+00:08:06,480 --> 00:08:11,520
+And then I give it some examples, new time step six a.m. David is asleep, new time step.
+然后我举一些例子，新的时间步长六点。大卫睡着了，新的时间步。
+
+114
+00:08:11,520 --> 00:08:17,040
+And then sure enough, it can generate, OK, 7.30 David is having breakfast with his family, new time step.
+然后果然，它可以产生，好吧，7.30大卫正在和他的家人一起吃早餐，新的时间步长。
+
+115
+00:08:17,040 --> 00:08:23,160
+Now, in the game, I'm sure they're probably specifying actually when these new time steps, you know,
+现在，在游戏中，我敢肯定他们可能正在指定这些新的时间步长，你知道，
+
+116
+00:08:23,160 --> 00:08:26,480
+if it's like every 10 minutes, every five minutes, that kind of thing.
+如果像每10分钟，每5分钟，那种事情。
+
+117
+00:08:26,480 --> 00:08:33,000
+You can see the large language model is pretty good at sort of working out that, OK, at 7.30 a.m.
+你可以看到大型语言模型非常擅长解决这个问题，好吧，早上7点30分。
+
+118
+00:08:33,000 --> 00:08:40,440
+You know, he's doing this at 9 a.m. David is opening Jason Sushi restaurant and preparing for the day's customers.
+你知道，他是在早上9点做的。大卫正在开杰森寿司餐厅，为当天的顾客做准备。
+
+119
+00:08:40,440 --> 00:08:44,320
+OK, and then I basically say if he's in a conversation, show us the conversation.
+好的，然后我基本上说如果他在谈话中，给我们看谈话。
+
+120
+00:08:44,320 --> 00:08:47,840
+So 11.30 he's taking a lunch order from his neighbor.
+所以11点30分，他从邻居那里点了午餐。
+
+121
+00:08:47,840 --> 00:08:53,160
+And we can see that this is the conversation that occurred that, hi, David, I'd like to have some salmon.
+我们可以看到，这是发生的对话，嗨，大卫，我想吃一些鲑鱼。
+
+122
+00:08:53,160 --> 00:08:57,400
+So she please, of course, and get a sense of what's going on here.
+所以她当然会很高兴，并了解这里发生了什么。
+
+123
+00:08:57,400 --> 00:08:59,760
+And we can see there's other conversations going on.
+我们可以看到还有其他对话正在进行中。
+
+124
+00:08:59,760 --> 00:09:03,320
+We can actually then ask it to generate a whole bunch of time steps here.
+然后，我们实际上可以要求它在这里生成一大堆时间步长。
+
+125
+00:09:03,320 --> 00:09:07,040
+I've asked it to generate 10 between 3 p.m. and 10 p.m.
+我要求它在下午 3 点到 10 点之间生成 10 个。
+
+126
+00:09:07,040 --> 00:09:17,080
+And you can see, sure enough, it gives these in a nice order and they make sense for the character that we've described that is David is the restaurateur.
+你可以看到，果然，它以很好的顺序给出了这些，它们对于我们描述的角色是有意义的，大卫是餐馆老板。
+
+127
+00:09:17,080 --> 00:09:19,000
+And so that's kind of what they're doing here.
+这就是他们在这里所做的。
+
+128
+00:09:19,000 --> 00:09:27,680
+Once they create these characters, is they're creating this idea of running it through in a time stamp.
+一旦他们创建了这些角色，他们就是在创建在时间戳中运行它的想法。
+
+129
+00:09:27,680 --> 00:09:36,840
+And actually, later on, you see when they get to or jump around a bit, you'll see they're creating this sort of this is going into the eventually going to go into the memory stream of where we can see.
+实际上，稍后，你会看到当他们到达或跳来跳去时，你会看到他们正在创造这种东西，最终会进入我们可以看到的内存流。
+
+130
+00:09:36,840 --> 00:09:42,680
+Okay, a timestamp of what the character is doing at the various time, et cetera.
+好的，角色在不同时间所做的事情的时间戳，等等。
+
+131
+00:09:42,680 --> 00:09:48,480
+So in the paper, they do talk about that you can actually go in as a character yourself and interact with people.
+所以在论文中，他们确实谈到了你实际上可以自己作为一个角色进入并与人互动。
+
+132
+00:09:48,480 --> 00:09:51,880
+And that will then change how they interact as well.
+这也将改变他们的互动方式。
+
+133
+00:09:51,880 --> 00:09:56,600
+Because just as I showed you making the David Bourne, you would have one of these for each of the agents.
+因为就像我展示你制作大卫·伯恩一样，你会为每个代理商提供一个这样的。
+
+134
+00:09:56,600 --> 00:10:00,160
+And each time they interact, this is where the memory comes in.
+每次他们互动时，这就是记忆的来源。
+
+135
+00:10:00,160 --> 00:10:03,880
+So each of them has a memory of what they've done.
+所以他们每个人都对自己所做的事情有记忆。
+
+136
+00:10:03,880 --> 00:10:09,720
+And they can go through, they can update that they can use that to plan for the next thing.
+他们可以经历，他们可以更新，他们可以用它来计划下一件事。
+
+137
+00:10:09,720 --> 00:10:18,160
+So this example sort of day in the life gives them some of the key things that we were talking about with the time steps and stuff like that.
+所以这个生命中的例子给了他们一些关键的事情，我们正在谈论的时间步长和类似的东西。
+
+138
+00:10:18,160 --> 00:10:21,600
+They point out that you start to see these social behaviors.
+他们指出，你开始看到这些社会行为。
+
+139
+00:10:21,600 --> 00:10:25,920
+And for me, what's the really interesting part, though, is this kind of memory system.
+对我来说，真正有趣的部分是这种记忆系统。
+
+140
+00:10:25,920 --> 00:10:30,000
+So let me look at the diagram and I'll go through it and explain what's going on.
+所以让我看一下这张图，我会通过它并解释发生了什么。
+
+141
+00:10:30,000 --> 00:10:33,080
+So each character perceives something in the world.
+所以每个角色都感知到世界上的一些东西。
+
+142
+00:10:33,080 --> 00:10:40,800
+So as we saw this get the GPT-4 explaining what David was doing, that's like him perceiving it.
+所以当我们看到GPT-4解释大卫在做什么时，就像他感知到的那样。
+
+143
+00:10:40,800 --> 00:10:43,360
+That gets put into the memory stream.
+这被放入内存流中。
+
+144
+00:10:43,360 --> 00:10:49,240
+And the memory stream will look something like this, where you've got time stamps with things that the character actually saw.
+记忆流看起来像这样，你有时间戳，上面有角色实际看到的东西。
+
+145
+00:10:49,240 --> 00:10:55,960
+It's then got to basically work out how to use these memories and how to take actions.
+然后，它基本上必须弄清楚如何使用这些记忆以及如何采取行动。
+
+146
+00:10:55,960 --> 00:10:57,920
+So to do that, it's got a few different things.
+所以要做到这一点，它有一些不同的东西。
+
+147
+00:10:57,920 --> 00:11:04,640
+So it's got a way of retrieving memories and we'll look at the user's waiting system to do this.
+所以它有一种检索记忆的方法，我们将看看用户的等待系统来做到这一点。
+
+148
+00:11:04,640 --> 00:11:09,920
+And then once it's retrieved, those memories, it either makes a plan and if it makes a plan,
+然后一旦它被检索到，那些记忆，它要么制定一个计划，如果它制定一个计划，
+
+149
+00:11:09,920 --> 00:11:15,120
+that plan gets put back into a sort of memory of its own and or reflects on it.
+这个计划被放回自己的记忆中，或者反思它。
+
+150
+00:11:15,120 --> 00:11:20,800
+So the whole idea of the reflection is very cool in that it can take a whole.
+所以反射的整个想法非常酷，因为它可以采取一个整体。
+
+151
+00:11:20,800 --> 00:11:24,200
+You can sort of think about the reflection as being like a summarization.
+你可以把反思想象成一个总结。
+
+152
+00:11:24,200 --> 00:11:31,040
+So it can take a conversation that David has had with someone talking about something for work.
+因此，大卫可以与某人谈论工作方面的对话。
+
+153
+00:11:31,040 --> 00:11:36,280
+And then it can summarize the key parts of that that David needs to remember.
+然后它可以总结大卫需要记住的关键部分。
+
+154
+00:11:36,280 --> 00:11:39,800
+And that will then go back into a sort of memory system there.
+然后这将回到那里的某种内存系统中。
+
+155
+00:11:39,800 --> 00:11:41,560
+And these retrieved memories.
+而这些找回的记忆。
+
+156
+00:11:41,560 --> 00:11:45,440
+So this is sort of a loop going around loops going around here.
+所以这是一个循环，绕着这里循环。
+
+157
+00:11:45,440 --> 00:11:51,720
+These retrieved memories are then used with the plan to actually decide what actions to take.
+然后，这些检索到的记忆与计划一起使用，以实际决定要采取什么行动。
+
+158
+00:11:51,720 --> 00:11:55,400
+Once it's got those relevant memories, once it's retrieved, those actions,
+一旦它有了那些相关的记忆，一旦它被检索到，那些动作，
+
+159
+00:11:55,400 --> 00:11:59,160
+it determines the action and it takes the next step on this.
+它确定操作并为此采取下一步措施。
+
+160
+00:11:59,160 --> 00:12:05,640
+So they go in in quite in depth about how they do the memory retrieval for this.
+因此，他们非常深入地介绍了如何为此进行内存检索。
+
+161
+00:12:05,640 --> 00:12:11,640
+One of the cool things that they mentioned in here is this whole sort of waiting system
+他们在这里提到的一件很酷的事情是整个等待系统
+
+162
+00:12:11,640 --> 00:12:17,880
+of like, how do you actually remember, you know, how do you actually determine what to focus on
+比如，你如何真正记住，你知道，你如何真正确定要关注什么
+
+163
+00:12:17,880 --> 00:12:19,800
+and what's important kind of thing.
+什么是重要的事情。
+
+164
+00:12:19,800 --> 00:12:23,720
+So you don't want to remember everything because that's just going to clutter it up.
+所以你不想记住所有东西，因为这只会把它弄得乱七八糟。
+
+165
+00:12:23,720 --> 00:12:28,520
+And also the context span of the large language model is going to be too small
+而且大型语言模型的上下文跨度也太小了
+
+166
+00:12:28,520 --> 00:12:31,800
+for you to put everything in to that context span.
+以便您将所有内容都放入该上下文跨度中。
+
+167
+00:12:31,800 --> 00:12:36,760
+So they use basically a waiting system for doing this.
+所以他们基本上使用一个等待系统来做到这一点。
+
+168
+00:12:36,760 --> 00:12:39,720
+And this brings up a whole interesting sort of thing as well.
+这也带来了一件非常有趣的事情。
+
+169
+00:12:39,720 --> 00:12:42,520
+So they wait basically on recency.
+所以他们基本上等待新近。
+
+170
+00:12:42,520 --> 00:12:46,120
+So obviously things that are more recent, you're going to remember more.
+所以很明显，最近的事情，你会记住更多。
+
+171
+00:12:46,120 --> 00:12:47,480
+So they use that.
+所以他们使用它。
+
+172
+00:12:47,480 --> 00:12:49,320
+And then that decays over time.
+然后随着时间的推移而衰减。
+
+173
+00:12:49,320 --> 00:12:54,280
+So further the time steps are you away from that happening, the memory of that will be less.
+所以你离那件事发生的时间步越远，对那件事的记忆就会更少。
+
+174
+00:12:54,280 --> 00:12:57,320
+They do the importance of something.
+他们做某事的重要性。
+
+175
+00:12:57,320 --> 00:13:02,360
+So if something is important, then you're more likely to remember it.
+因此，如果某件事很重要，那么你更有可能记住它。
+
+176
+00:13:02,360 --> 00:13:08,840
+Also the relevance is something that's going to determine you being able to remember something.
+此外，相关性将决定你能够记住一些东西。
+
+177
+00:13:08,840 --> 00:13:12,200
+If it's a relevant topic to you, you're more likely to do this.
+如果这是一个与你相关的话题，你更有可能这样做。
+
+178
+00:13:12,200 --> 00:13:15,240
+So you can see that these are the numbers that they're getting.
+所以你可以看到这些是他们得到的数字。
+
+179
+00:13:15,240 --> 00:13:19,160
+The importance one is really interesting one because how do you decide what's important?
+重要性一个非常有趣，因为你如何决定什么是重要的？
+
+180
+00:13:19,560 --> 00:13:21,720
+So they actually give you a prompt.
+所以他们实际上给了你一个提示。
+
+181
+00:13:21,720 --> 00:13:26,120
+I've taken this and we've put this into GPT for we can play around with this.
+我已经接受了这个，我们已经把它放到 GPT 中，因为我们可以玩这个。
+
+182
+00:13:26,120 --> 00:13:31,160
+So you can see this is the prompt on a scale of one to 10 where one is purely mundane.
+所以你可以看到这是 1 到 10 的提示，其中 1 个是纯粹平凡的。
+
+183
+00:13:31,160 --> 00:13:37,400
+And 10 is extremely poignant rate the poignancy of the following piece of David's memory.
+10是大卫接下来一段记忆的辛酸。
+
+184
+00:13:37,400 --> 00:13:41,400
+So the memory here would be ordering cleaning supplies for his restaurant
+所以这里的记忆是为他的餐厅订购清洁用品
+
+185
+00:13:41,400 --> 00:13:42,520
+from the supermarket.
+从超市。
+
+186
+00:13:42,520 --> 00:13:44,360
+That's going to get a rating of two.
+这将得到两个评级。
+
+187
+00:13:44,360 --> 00:13:48,440
+And then I say, okay, applying for a loan from the bank for a restaurant expansion.
+然后我说，好吧，向银行申请贷款，用于餐厅扩张。
+
+188
+00:13:48,440 --> 00:13:51,400
+Now this is something you would expect that would be much more important.
+现在，这是您所期望的更重要的事情。
+
+189
+00:13:51,400 --> 00:13:54,120
+Sure enough, it gets a rating of seven.
+果然，它得到了七分的评分。
+
+190
+00:13:54,120 --> 00:13:57,400
+Then I was interested to test that with things like that are more personal.
+然后我有兴趣用这样更个人化的东西来测试它。
+
+191
+00:13:57,400 --> 00:14:03,560
+So we can kind of elicit David's values in some ways here that David's son getting in trouble
+因此，我们可以在这里以某种方式引出大卫的价值观，大卫的儿子陷入困境
+
+192
+00:14:03,560 --> 00:14:07,560
+at school and David having to go to a parent teacher meeting next Tuesday.
+在学校，大卫不得不去参加下周二的家长会。
+
+193
+00:14:07,560 --> 00:14:09,160
+Well, that's a six for him.
+嗯，这对他来说是六分。
+
+194
+00:14:09,160 --> 00:14:13,480
+It's not as important as his expansion, but it's obviously a lot more important than
+这不像他的扩张那么重要，但显然比他重要得多
+
+195
+00:14:13,480 --> 00:14:15,320
+him ordering the cleaning supplies.
+他订购了清洁用品。
+
+196
+00:14:15,320 --> 00:14:19,080
+So each of these is just a sort of simple example.
+所以每一个都只是一个简单的例子。
+
+197
+00:14:19,080 --> 00:14:25,000
+And this could be informed more by the character of David that we set up and we set up in his
+这可以通过我们建立的大卫的性格来更多地告知他，我们在他身上设置的。
+
+198
+00:14:25,000 --> 00:14:26,840
+values in the prompt as well.
+提示中的值。
+
+199
+00:14:26,840 --> 00:14:29,080
+And they may be doing something like that.
+他们可能正在做类似的事情。
+
+200
+00:14:29,080 --> 00:14:33,400
+The idea once they've got this though, they're able to then sort of work out, okay,
+不过，一旦他们有了这个想法，他们就能够解决，好吧，
+
+201
+00:14:33,400 --> 00:14:36,600
+what do you actually pay attention to in these?
+在这些方面，你到底在注意什么？
+
+202
+00:14:36,600 --> 00:14:43,400
+And then from these memories, what gets passed to a language model to use for planning
+然后从这些记忆中，将什么传递给语言模型以用于规划
+
+203
+00:14:43,400 --> 00:14:48,680
+or to use for planning and taking action or for doing reflections.
+或用于计划和采取行动或进行反思。
+
+204
+00:14:48,680 --> 00:14:50,280
+This is where the reflections come in.
+这就是反射的用武之地。
+
+205
+00:14:50,280 --> 00:14:53,880
+So generic evasions were equipped with only raw observations,
+所以通用逃避只配备了原始观察，
+
+206
+00:14:53,880 --> 00:14:56,440
+struggle to generalize or make inferences.
+努力概括或推断。
+
+207
+00:14:56,440 --> 00:14:58,280
+So this makes a lot of sense, right?
+所以这很有意义，对吧？
+
+208
+00:14:58,280 --> 00:15:03,880
+If you think about it, that when you look at something only at a surface level,
+如果你仔细想想，当你只在表面层面上看某事时，
+
+209
+00:15:03,880 --> 00:15:05,080
+humans don't really do that.
+人类并没有真正这样做。
+
+210
+00:15:05,080 --> 00:15:10,040
+We tend to think things through and think how do they relate to other things in our life?
+我们倾向于仔细思考问题，并思考它们与我们生活中的其他事物有何关系？
+
+211
+00:15:10,040 --> 00:15:14,520
+How, you know, what information was more important, that kind of thing.
+你知道，什么信息更重要，诸如此类。
+
+212
+00:15:14,520 --> 00:15:16,280
+And this is where the reflection comes in.
+这就是反射的用武之地。
+
+213
+00:15:16,280 --> 00:15:21,560
+So it can take things like conversations and actions and stuff like that.
+所以它可以采取诸如对话和行动之类的事情。
+
+214
+00:15:21,560 --> 00:15:26,440
+And it can reflect on the higher level, more abstract thoughts from this.
+它可以从中反映更高层次、更抽象的想法。
+
+215
+00:15:26,440 --> 00:15:30,120
+This is where they basically generate more thoughts doing this.
+这就是他们基本上产生更多想法的地方。
+
+216
+00:15:30,120 --> 00:15:35,640
+And this is done through, they talk about here using a prompt where given only the information
+这是通过完成的，他们在这里使用提示来谈论，其中仅提供信息
+
+217
+00:15:35,640 --> 00:15:41,960
+above, what are the three most salient high level questions we can answer about the subjects
+以上，我们可以回答的关于这些主题的三个最突出的高级问题是什么
+
+218
+00:15:41,960 --> 00:15:42,760
+in the statements.
+在声明中。
+
+219
+00:15:42,760 --> 00:15:48,920
+And they give some examples of talking to people, talking to this class smaller.
+他们举了一些与人交谈的例子，与这个班级交谈。
+
+220
+00:15:48,920 --> 00:15:55,080
+And he's obviously perhaps in the conversation talking at a very low level, you know,
+他显然可能在谈话中说话的水平很低，你知道，
+
+221
+00:15:55,080 --> 00:15:57,800
+about his research project and stuff like that.
+关于他的研究项目和类似的东西。
+
+222
+00:15:57,800 --> 00:16:01,080
+The high level stuff is that he's writing a research paper.
+高层次的东西是他正在写一篇研究论文。
+
+223
+00:16:01,080 --> 00:16:02,920
+He enjoys reading a book.
+他喜欢看书。
+
+224
+00:16:02,920 --> 00:16:05,080
+He's conversing with these people, right?
+他在和这些人交谈，对吧？
+
+225
+00:16:05,080 --> 00:16:08,440
+There's different things that are, you know, much more high level.
+你知道，有不同的东西是更高水平的。
+
+226
+00:16:08,440 --> 00:16:13,560
+And they're kind of like the summarizations of the key things that we would pass into the
+它们有点像我们将传递到关键事物的摘要
+
+227
+00:16:13,560 --> 00:16:19,640
+language model for doing the planning and doing the action steps that are in here.
+用于执行此处的规划和操作步骤的语言模型。
+
+228
+00:16:19,640 --> 00:16:22,280
+Finally, coming to the planning and reacting.
+最后，来到计划和反应。
+
+229
+00:16:22,280 --> 00:16:28,440
+Again, this is done through having a sequence, you know, they generate a sequence of future
+同样，这是通过有一个序列来完成的，你知道，他们生成了一个未来的序列。
+
+230
+00:16:28,440 --> 00:16:30,120
+actions for the agent.
+代理的操作。
+
+231
+00:16:30,120 --> 00:16:34,520
+And they try to, you know, the goal is to keep the agent's behavior consistent over time.
+他们试图，你知道，目标是随着时间的推移保持代理的行为一致。
+
+232
+00:16:34,520 --> 00:16:37,800
+A plan includes a location, a starting time, a duration.
+计划包括位置、开始时间、持续时间。
+
+233
+00:16:37,800 --> 00:16:43,960
+So that could be one of the characters going to the park and painting for four hours.
+所以这可能是其中一个角色去公园画画四个小时。
+
+234
+00:16:43,960 --> 00:16:49,080
+So you've got the location, you've got what the actual action is doing, a starting time,
+所以你有位置，你有实际行动正在做什么，一个开始时间，
+
+235
+00:16:49,080 --> 00:16:50,520
+duration in there.
+持续时间在那里。
+
+236
+00:16:50,520 --> 00:16:55,240
+So they mentioned that like reflections, plans are stored in the memory stream and are
+所以他们提到，像反射一样，计划存储在内存流中，并且
+
+237
+00:16:55,240 --> 00:16:57,560
+included in the retrieval process.
+包含在检索过程中。
+
+238
+00:16:57,560 --> 00:17:03,960
+This allows the agent to consider observations, reflections and plans all together when deciding
+这允许代理在决定时一起考虑观察、反思和计划
+
+239
+00:17:03,960 --> 00:17:05,320
+on how to behave.
+关于如何表现。
+
+240
+00:17:05,320 --> 00:17:08,040
+So agents might change their plans midstream as well.
+因此，代理商也可能在中游改变他们的计划。
+
+241
+00:17:08,040 --> 00:17:12,520
+So as they're doing these reflection things, as they're doing the planning, they're using
+因此，当他们做这些反思的事情时，当他们做计划时，他们正在使用
+
+242
+00:17:12,520 --> 00:17:16,600
+this memory and they're sort of putting it in there just through generating it.
+这个记忆，他们只是通过生成它把它放在那里。
+
+243
+00:17:16,600 --> 00:17:22,040
+You can see in here, they've given some examples based on this, what would actually be some of
+你可以在这里看到，他们基于这个给出了一些例子，实际上会是一些
+
+244
+00:17:22,040 --> 00:17:22,680
+the plans.
+计划。
+
+245
+00:17:22,680 --> 00:17:27,480
+And we can see that, okay, the plan might be to wake up, complete morning routine, go to
+我们可以看到，好吧，计划可能是醒来，完成早晨的例行公事，去
+
+246
+00:17:27,480 --> 00:17:27,960
+college.
+大学。
+
+247
+00:17:27,960 --> 00:17:33,160
+So this is for the student, you know, work on the particular projects from this time to
+所以这是给学生的，你知道，从这个时候到特定的项目工作。
+
+248
+00:17:33,160 --> 00:17:33,880
+this time.
+这一次。
+
+249
+00:17:33,880 --> 00:17:36,360
+It gives you a nice plan for this.
+它为您提供了一个不错的计划。
+
+250
+00:17:36,360 --> 00:17:43,000
+And then that would be fed in with what we looked up earlier on to generate the next
+然后，这将与我们之前查找的内容一起输入以生成下一个
+
+251
+00:17:43,000 --> 00:17:44,280
+time steps.
+时间步长。
+
+252
+00:17:44,280 --> 00:17:48,440
+So the next time steps might change if they bump into someone.
+因此，如果他们撞到某人，下一次步骤可能会改变。
+
+253
+00:17:48,440 --> 00:17:52,440
+But if they're just by themselves, they're probably going to stick to their plan over
+但如果他们只是一个人，他们可能会坚持他们的计划。
+
+254
+00:17:52,440 --> 00:17:53,000
+time.
+时间。
+
+255
+00:17:53,000 --> 00:17:56,680
+And you can see this, they talk about, you know, reacting and updating to plans.
+你可以看到这一点，他们谈论，你知道，对计划做出反应和更新。
+
+256
+00:17:56,680 --> 00:17:58,440
+They operate in an action loop.
+它们在动作循环中运行。
+
+257
+00:17:58,440 --> 00:18:03,000
+So one of the big things is to understand this sort of game loop that's going on.
+因此，最重要的事情之一是了解正在发生的这种游戏循环。
+
+258
+00:18:03,000 --> 00:18:09,800
+That at each point, like a new time is set, and all the characters or all the agents go
+在每个点上，就像设定了一个新的时间，所有的角色或所有的代理人都去了
+
+259
+00:18:09,800 --> 00:18:16,360
+through and run their evaluation and their planning and looking at their action and return
+通过并运行他们的评估和计划，并查看他们的行动和回报
+
+260
+00:18:16,360 --> 00:18:21,880
+that that actually is getting stored in kind of like a graph or a tree structure that's
+它实际上被存储在一种图形或树结构中，就像图形或树结构一样
+
+261
+00:18:21,880 --> 00:18:25,320
+used to in Jason to actually plot all this out.
+曾经在杰森身上实际策划了这一切。
+
+262
+00:18:25,320 --> 00:18:30,920
+So when we're looking at this, if I come down here, we want to find, let's say we find this
+所以当我们看到这个时，如果我来到这里，我们想找到，假设我们找到了这个。
+
+263
+00:18:30,920 --> 00:18:32,520
+character running around.
+角色跑来跑去。
+
+264
+00:18:32,520 --> 00:18:38,040
+This is actually all just using a game engine called phaser that they're using to do this.
+这实际上只是使用他们用来做到这一点的称为相位器的游戏引擎。
+
+265
+00:18:38,040 --> 00:18:43,880
+And my guess is that they've gone through, they may have made it from scratch, or they've
+我的猜测是，他们已经经历了，他们可能是从头开始的，或者他们已经
+
+266
+00:18:43,880 --> 00:18:46,360
+they may have taken one of the tutorials and edited it.
+他们可能已经接受了其中一个教程并对其进行了编辑。
+
+267
+00:18:46,360 --> 00:18:51,000
+You can see there are some examples of tutorials in here of how to build something a little
+您可以在此处看到一些教程示例，说明如何构建一些东西
+
+268
+00:18:51,000 --> 00:18:52,280
+bit sort of like this.
+有点像这样。
+
+269
+00:18:52,280 --> 00:18:59,320
+And using this, this is just plot, this is basically just rendering out from Jason.
+而利用这个，这只是剧情，这基本上只是杰森的渲染。
+
+270
+00:18:59,320 --> 00:19:04,280
+So they do talk about in here that the goal of what they're doing is that this environment is
+所以他们确实在这里谈论他们正在做的事情的目标是这个环境是
+
+271
+00:19:04,280 --> 00:19:10,440
+built with phaser that they're using Jason to actually store this and the sandbox it.
+使用相位器构建，他们正在使用Jason来实际存储它和沙盒。
+
+272
+00:19:10,440 --> 00:19:15,400
+And then they kind of flatten out the Jason for feeding it into large language models.
+然后他们把Jason弄扁了，把它输入到大型语言模型中。
+
+273
+00:19:15,400 --> 00:19:19,560
+So if there are certain things that you know they need from the Jason, they've obviously got some
+因此，如果你知道他们需要从杰森那里得到某些东西，他们显然会得到一些
+
+274
+00:19:19,560 --> 00:19:24,600
+ways of deciding what they need and then taking those things and flattening them out.
+决定他们需要什么，然后把这些东西弄平的方法。
+
+275
+00:19:24,600 --> 00:19:29,000
+There's a lot of engineering to this, not just AI stuff.
+这有很多工程，而不仅仅是人工智能的东西。
+
+276
+00:19:29,000 --> 00:19:32,040
+There's a lot of really interesting sort of engineering going on in here.
+这里有很多非常有趣的工程。
+
+277
+00:19:32,040 --> 00:19:35,080
+And yeah, they talk about how they put all this together.
+是的，他们谈论他们如何将所有这些放在一起。
+
+278
+00:19:35,080 --> 00:19:37,480
+It is interesting to look at the prompts that they use.
+看看他们使用的提示很有趣。
+
+279
+00:19:37,480 --> 00:19:40,440
+So one of the things I haven't covered is the dialogue.
+所以我没有涉及的一件事是对话。
+
+280
+00:19:40,440 --> 00:19:46,520
+So they've got a whole sort of dialogue system of where they're basically just sort of kicking
+所以他们有一个完整的对话系统，他们基本上只是踢球。
+
+281
+00:19:46,520 --> 00:19:50,920
+it off with a prompt and seeing, okay, what do they get back from the dialogue.
+它通过提示结束，看看，好吧，他们从对话中得到了什么。
+
+282
+00:19:50,920 --> 00:19:57,000
+Those dialogues are fed into the memory of each of the agents that was involved in that
+这些对话被输入到参与其中的每个代理人的记忆中
+
+283
+00:19:57,000 --> 00:20:03,160
+dialogue. That's where you get things like the Valentine's Day party is a dialogue of where one
+对话。这就是你得到的东西的地方，比如情人节派对是一个人的对话
+
+284
+00:20:03,160 --> 00:20:07,480
+agent says to another one, hey, there's this party, it's on at this time.
+经纪人对另一个人说，嘿，有这个派对，现在开始了。
+
+285
+00:20:07,480 --> 00:20:11,000
+And then that goes into the person who's listening's memory.
+然后进入正在倾听的人的记忆。
+
+286
+00:20:11,000 --> 00:20:13,720
+And then they're able to use that to tell another agent.
+然后他们能够用它来告诉另一个代理。
+
+287
+00:20:13,720 --> 00:20:17,480
+That's how it actually happens as we're going through this.
+这就是我们正在经历这件事时实际发生的方式。
+
+288
+00:20:17,480 --> 00:20:20,360
+Anyway, unconscious, I've gone very long on this video.
+无论如何，无意识的，我已经在这个视频上呆了很长时间。
+
+289
+00:20:20,360 --> 00:20:23,080
+I have a read of the paper.
+我读过这篇论文。
+
+290
+00:20:23,080 --> 00:20:26,760
+Just try coming and try some of the ideas out in something like chat.
+试着来试试聊天之类的想法。
+
+291
+00:20:26,760 --> 00:20:31,000
+She they actually use chat GPT, not GPT for for doing this.
+她实际上使用聊天 GPT，而不是 GPT 来执行此操作。
+
+292
+00:20:31,000 --> 00:20:35,560
+And you can see that with just a little bit of playing with GPT for I was able to get this
+你可以看到，只要玩一点点 GPT，我就能得到这个
+
+293
+00:20:35,560 --> 00:20:37,960
+generating similar kinds of things.
+生成类似的东西。
+
+294
+00:20:37,960 --> 00:20:42,840
+So it does show that this is something that you could go through the paper and reproduce
+所以它确实表明这是你可以通过论文并复制的东西
+
+295
+00:20:42,840 --> 00:20:44,040
+if you want to.
+如果你愿意。
+
+296
+00:20:44,040 --> 00:20:49,880
+It's fun to just come back and look at the game itself and see what's going on, what they're doing.
+回来看看游戏本身，看看发生了什么，他们在做什么，这很有趣。
+
+297
+00:20:49,880 --> 00:20:52,760
+We can see what's this person doing.
+我们可以看到这个人在做什么。
+
+298
+00:20:52,760 --> 00:20:56,440
+If we look down here, we can see, okay, this is where they are.
+如果我们往下看，我们可以看到，好吧，这就是他们所在的地方。
+
+299
+00:20:56,440 --> 00:20:59,000
+This is the conversation that they've got going on.
+这是他们正在进行的对话。
+
+300
+00:20:59,000 --> 00:21:00,600
+And we can see they're changing over time.
+我们可以看到它们随着时间的推移而变化。
+
+301
+00:21:00,600 --> 00:21:00,920
+Right.
+右。
+
+302
+00:21:00,920 --> 00:21:03,880
+So if I pause it, we can stop it and look at it.
+因此，如果我暂停它，我们可以停止它并查看它。
+
+303
+00:21:03,880 --> 00:21:08,840
+But we can see that if we follow one of these characters, we can see what's going on with them
+但是我们可以看到，如果我们跟随其中一个角色，我们可以看到他们发生了什么。
+
+304
+00:21:08,840 --> 00:21:09,400
+over time.
+随着时间的推移。
+
+305
+00:21:09,400 --> 00:21:14,040
+And this is just being rendered from the Jason, right, that we're looking at.
+这只是从杰森那里渲染出来的，对，我们正在看的。
+
+306
+00:21:14,040 --> 00:21:18,200
+This is obviously, you know, probably not playing out in real time.
+你知道，这显然不是实时播放的。
+
+307
+00:21:18,200 --> 00:21:21,000
+It's been created first with the language models.
+它是首先使用语言模型创建的。
+
+308
+00:21:21,000 --> 00:21:25,000
+I imagine that all the calls to the different language models might take a little bit of time.
+我想对不同语言模型的所有调用可能需要一点时间。
+
+309
+00:21:25,000 --> 00:21:29,240
+But once they've got this, they can then render out a whole day or something quite easily.
+但是一旦他们有了这个，他们就可以很容易地渲染一整天或其他东西。
+
+310
+00:21:29,240 --> 00:21:30,520
+All right.
+好吧。
+
+311
+00:21:30,520 --> 00:21:37,160
+So that was the paper, generative agents, interactive simulacra of human behavior.
+这就是论文，生成代理，人类行为的交互式模拟。
+
+312
+00:21:37,160 --> 00:21:40,280
+Very cool paper, I think, some really interesting ideas.
+非常酷的论文，我认为，一些非常有趣的想法。
+
+313
+00:21:40,280 --> 00:21:44,280
+You're definitely going to see this kind of thing happen and coming to sort of non-player
+你肯定会看到这种事情发生，并且会变成非玩家。
+
+314
+00:21:44,280 --> 00:21:45,720
+characters in games.
+游戏中的角色。
+
+315
+00:21:45,720 --> 00:21:51,400
+Also, a lot of uses for simulation and interactive role play with humans.
+此外，模拟和与人类互动角色扮演的很多用途。
+
+316
+00:21:51,400 --> 00:21:56,040
+So allowing humans to try out different things before they actually do it in the real world
+因此，允许人类在现实世界中实际尝试之前尝试不同的事情
+
+317
+00:21:56,040 --> 00:21:58,440
+is a really good use for this kind of technology.
+是这种技术的一个很好的用途。
+
+318
+00:21:58,440 --> 00:22:02,600
+As always, if you have any questions, please put them in the comments below.
+与往常一样，如果您有任何疑问，请在下面的评论中提出。
+
+319
+00:22:02,600 --> 00:22:07,320
+If you found this video useful, please click like and subscribe.
+如果您觉得此视频有用，请单击“赞”并订阅。
+
+320
+00:22:07,320 --> 00:22:08,920
+I will see you in the next video.
+我将在下一个视频中见到你。
+
+321
+00:22:08,920 --> 00:22:09,560
+Bye for now.
+再见。
+
+322
+00:22:09,560 --> 00:22:19,560
+[BLANK_AUDIO]
+[BLANK_AUDIO]
+

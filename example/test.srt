@@ -1,0 +1,1288 @@
+1
+00:00:00,000 --> 00:00:08,160
+ Alright, in this video, I'm going to look at the paper, Generative Agents, Interactive Simulcra of Humanity.
+
+2
+00:00:08,160 --> 00:00:10,160
+ So what I'm going to do is go through the paper.
+
+3
+00:00:10,160 --> 00:00:13,760
+ I'm also going to reproduce some of this in GPT-4.
+
+4
+00:00:13,760 --> 00:00:17,840
+ And we're going to have a look at how you would do these Generative Agents, etc.
+
+5
+00:00:17,840 --> 00:00:22,600
+ Using some of the ideas from the paper if you wanted to do it yourself.
+
+6
+00:00:22,600 --> 00:00:32,680
+ So this paper is all about creating autonomous agents that can at least have the illusion of thinking.
+
+7
+00:00:32,680 --> 00:00:41,000
+ So actually Simulcra is creating like likenesses or a reflection, a representation of human behavior in here.
+
+8
+00:00:41,000 --> 00:00:43,000
+ And that's what they're trying to create in here.
+
+9
+00:00:43,000 --> 00:00:45,200
+ And they do it with a very nice little game.
+
+10
+00:00:45,200 --> 00:00:47,080
+ So we'll have a look at the game as well.
+
+11
+00:00:47,080 --> 00:00:50,800
+ They've put up a demo online where you can actually watch what's going on,
+
+12
+00:00:50,800 --> 00:00:56,120
+ see the different agents, and there's 25 of these agents going at a time.
+
+13
+00:00:56,120 --> 00:00:57,880
+ And we can also see what they're doing.
+
+14
+00:00:57,880 --> 00:00:59,880
+ So we can see a lot of them are asleep.
+
+15
+00:00:59,880 --> 00:01:03,560
+ If we click on one of them, it'll take us to where they are.
+
+16
+00:01:03,560 --> 00:01:05,560
+ And we can actually watch what they're doing.
+
+17
+00:01:05,560 --> 00:01:10,320
+ We can also see their current action here and the details about them.
+
+18
+00:01:10,320 --> 00:01:15,360
+ This is very cool because it's doing 25 different agents at a time.
+
+19
+00:01:15,360 --> 00:01:19,400
+ But really it's come up with a system for doing many agents.
+
+20
+00:01:19,400 --> 00:01:23,680
+ So I don't see why this couldn't be scaled up to even a lot more agents.
+
+21
+00:01:23,680 --> 00:01:28,400
+ The only limitations are the pinging the large language model, etc.
+
+22
+00:01:28,400 --> 00:01:31,640
+ So let's jump in and have a look at what this is and how it's doing.
+
+23
+00:01:31,640 --> 00:01:34,640
+ I'll point out that so these are the authors up here.
+
+24
+00:01:34,640 --> 00:01:37,640
+ Percy Leung is probably the supervisor, I'm guessing.
+
+25
+00:01:37,640 --> 00:01:42,520
+ On this, he was also on the Alpaca paper and many other things that have come out of Stanford.
+
+26
+00:01:42,520 --> 00:01:46,080
+ Some of Google research people also on this paper.
+
+27
+00:01:46,080 --> 00:01:53,920
+ So they basically are setting out to create a way to make a simulation of human behavior
+
+28
+00:01:53,920 --> 00:01:59,200
+ and interactivity between humans and objects and humans and other humans here.
+
+29
+00:01:59,200 --> 00:02:02,520
+ To do that, they've created this sort of game world.
+
+30
+00:02:02,520 --> 00:02:07,680
+ And while the game world is quite nice for us to be able to see it, it's not the coolest thing.
+
+31
+00:02:07,680 --> 00:02:11,040
+ By far, how they've actually put it all together is really good.
+
+32
+00:02:11,040 --> 00:02:15,720
+ So they refer to this as the interactive sandbox environment that they've got going on here.
+
+33
+00:02:15,720 --> 00:02:22,400
+ So what they're basically doing is getting these generative agents and creating an architecture
+
+34
+00:02:22,400 --> 00:02:28,920
+ that allows them to use large language models to store records of memory, experience,
+
+35
+00:02:28,920 --> 00:02:36,640
+ and then to synthesize from those actions and planning that they can take for actions in the future.
+
+36
+00:02:36,640 --> 00:02:42,440
+ And it turns out that this works really well and brings out a lot of really interesting traits
+
+37
+00:02:42,440 --> 00:02:46,520
+ both in what they do and also how it's done.
+
+38
+00:02:46,520 --> 00:02:52,720
+ So one of the examples is that one of the agents comes up with the idea of a Valentine's Day party
+
+39
+00:02:52,720 --> 00:02:57,120
+ and starts to spread that through conversation to other agents.
+
+40
+00:02:57,120 --> 00:03:02,120
+ And then the idea of that party gets spread right across the simulation
+
+41
+00:03:02,120 --> 00:03:07,720
+ and people actually end up showing up for this party that they've created themselves.
+
+42
+00:03:07,720 --> 00:03:10,440
+ So you go through a quite in-depth in the paper.
+
+43
+00:03:10,440 --> 00:03:12,880
+ I'm not going to go through everything in the paper,
+
+44
+00:03:12,880 --> 00:03:15,800
+ but we're going to look at some of the key things that are going on here.
+
+45
+00:03:15,800 --> 00:03:21,920
+ The idea here is that to enable these generative agents, they make this agent architecture.
+
+46
+00:03:21,920 --> 00:03:26,320
+ And this architecture basically stores memories, synthesizes things,
+
+47
+00:03:26,320 --> 00:03:32,840
+ and applies these relevant memories to generate believable behavior using a large language model.
+
+48
+00:03:32,840 --> 00:03:35,560
+ They talk about their architecture comprising of three parts,
+
+49
+00:03:35,560 --> 00:03:41,200
+ the memory stream, which we'll look at, the long-term memory module, and the natural language parts,
+
+50
+00:03:41,200 --> 00:03:48,080
+ which we'll also look at, and we'll try to recreate in GPT-4, just through playing around with this as well.
+
+51
+00:03:48,080 --> 00:03:50,240
+ They've also got a bunch of retrieval models.
+
+52
+00:03:50,240 --> 00:03:53,160
+ And then that's all in the first part.
+
+53
+00:03:53,160 --> 00:03:56,480
+ Then they've got this really interesting idea of reflection.
+
+54
+00:03:56,480 --> 00:04:00,920
+ So if you're a fan of Westworld, one of the whole themes in Westworld
+
+55
+00:04:00,920 --> 00:04:07,080
+ was this idea of these agents reflecting back on their own memories and their own experiences.
+
+56
+00:04:07,080 --> 00:04:11,080
+ And that's kind of what this is doing, maybe not in the same way as Westworld.
+
+57
+00:04:11,080 --> 00:04:18,080
+ But they've got this reflection idea, which synthesizes memories into higher-level inferences over time.
+
+58
+00:04:18,080 --> 00:04:21,440
+ And you could argue that's something that humans actually do.
+
+59
+00:04:21,440 --> 00:04:26,480
+ We take in what we see day to day, we then kind of chunk it together,
+
+60
+00:04:26,480 --> 00:04:31,720
+ and we basically get it to a point where if I ask you to describe a day from last week,
+
+61
+00:04:31,720 --> 00:04:34,840
+ you're probably not going to remember all the details, but you'll remember that,
+
+62
+00:04:34,840 --> 00:04:40,720
+ "Oh, yeah, I got in my car, I drove to this place, I met this person," those sorts of things.
+
+63
+00:04:40,720 --> 00:04:42,760
+ So that's sort of the higher-level stuff.
+
+64
+00:04:42,760 --> 00:04:45,920
+ And the third thing that they're really aiming at is this planning,
+
+65
+00:04:45,920 --> 00:04:51,280
+ which the idea of here is to basically take some of these conclusions that they've come up with
+
+66
+00:04:51,280 --> 00:04:55,040
+ and plan out actions that they can take with this.
+
+67
+00:04:55,040 --> 00:04:59,360
+ Again, the generative agents is what you're seeing in the game.
+
+68
+00:04:59,360 --> 00:05:05,040
+ For me, by far the more interesting part is actually the architecture that they've come up with to do this.
+
+69
+00:05:05,040 --> 00:05:10,760
+ They also go into some evaluation stuff, which I won't go into the video to how they evaluate it.
+
+70
+00:05:10,760 --> 00:05:16,480
+ So they talk a little bit about different forms of believable proxies for human behavior,
+
+71
+00:05:16,480 --> 00:05:18,880
+ what sort of come before for this kind of thing.
+
+72
+00:05:18,880 --> 00:05:22,160
+ And people have tried some ideas like this using RL,
+
+73
+00:05:22,160 --> 00:05:27,000
+ and they point out Alpha Star for Starcraft, the OpenAI5 for Dota,
+
+74
+00:05:27,000 --> 00:05:29,400
+ but they point out that those things are much more adversarial,
+
+75
+00:05:29,400 --> 00:05:33,000
+ where you're trying to kill the opponent playing this game or something like that.
+
+76
+00:05:33,000 --> 00:05:37,760
+ Whereas here, they're looking much more for collaborative sort of things
+
+77
+00:05:37,760 --> 00:05:41,840
+ and more natural human behavior coming out of this.
+
+78
+00:05:41,840 --> 00:05:45,520
+ Another example of where people have done something like this in the past
+
+79
+00:05:45,520 --> 00:05:51,080
+ was came out of Salesforce, where they actually tried to get an AI with RL
+
+80
+00:05:51,080 --> 00:05:55,680
+ to manage a simulated economy, which was also very interesting.
+
+81
+00:05:55,680 --> 00:06:00,280
+ And I do wonder if the next step for some of this is to start going in that direction
+
+82
+00:06:00,280 --> 00:06:02,920
+ with the framework that these people have created.
+
+83
+00:06:02,920 --> 00:06:05,640
+ So you can see that this is their mock world.
+
+84
+00:06:05,640 --> 00:06:07,400
+ It's got a bunch of things like a park.
+
+85
+00:06:07,400 --> 00:06:11,280
+ It's got places that people can go to in their houses.
+
+86
+00:06:11,280 --> 00:06:14,800
+ It's got different parts in the house so people can move around.
+
+87
+00:06:14,800 --> 00:06:19,880
+ The generative agents can move around, can interact in these locations.
+
+88
+00:06:19,880 --> 00:06:27,640
+ All right, so you can see first off, they talk about creating this idea of creating the agent.
+
+89
+00:06:27,640 --> 00:06:32,440
+ So they give an example here of a prompt to create an agent.
+
+90
+00:06:32,440 --> 00:06:38,880
+ And this is sort of key to a lot of this is that what they will do is create the agents
+
+91
+00:06:38,880 --> 00:06:43,200
+ and then they have like a time step in the game.
+
+92
+00:06:43,200 --> 00:06:48,480
+ So at every increment of time in the game, they ask each agent,
+
+93
+00:06:48,480 --> 00:06:53,000
+ what are you doing, both what are you thinking and what action are you taking?
+
+94
+00:06:53,000 --> 00:06:56,520
+ And if they're in a conversation, what's the conversation, that kind of thing.
+
+95
+00:06:56,520 --> 00:07:01,120
+ So just to sort of show you an example of this, let's look at GPT-4,
+
+96
+00:07:01,120 --> 00:07:04,480
+ where I've done the same kind of thing that we can look at here.
+
+97
+00:07:04,480 --> 00:07:10,280
+ So we basically got your AI behind an NPC game character called David Bourne.
+
+98
+00:07:10,280 --> 00:07:14,880
+ Now, this prompt I've just put in there, I'm sure their prompts are probably much nicer.
+
+99
+00:07:14,880 --> 00:07:18,080
+ And unfortunately, I don't think they've published all their prompts.
+
+100
+00:07:18,080 --> 00:07:21,880
+ But then we can take an example description like what they have done.
+
+101
+00:07:21,880 --> 00:07:23,800
+ And so here I've created this character.
+
+102
+00:07:23,800 --> 00:07:28,520
+ I've used some of their description from some of the other people in there.
+
+103
+00:07:28,520 --> 00:07:30,080
+ But I've met a new character, right?
+
+104
+00:07:30,080 --> 00:07:36,000
+ David Bourne is a restaurateur at the Jason Sushi restaurant on Brunswick Street, Fitzroy.
+
+105
+00:07:36,000 --> 00:07:41,240
+ And he's always looking to make the process of running his business easier for his customers.
+
+106
+00:07:41,240 --> 00:07:43,000
+ So we can see a little bit about him.
+
+107
+00:07:43,000 --> 00:07:44,240
+ He's married.
+
+108
+00:07:44,240 --> 00:07:45,720
+ We've got what his wife does.
+
+109
+00:07:45,720 --> 00:07:49,760
+ We've got his his child here, what they're studying.
+
+110
+00:07:49,760 --> 00:07:53,560
+ And we can see also his relationships with other people in there.
+
+111
+00:07:53,560 --> 00:07:59,800
+ So then what I basically have done is set this up so that each time step I enter the command, new time step.
+
+112
+00:07:59,800 --> 00:08:06,480
+ I want you to list the time of day and the action that David Bourne is taking in this conversation.
+
+113
+00:08:06,480 --> 00:08:11,520
+ And then I give it some examples, new time step six a.m. David is asleep, new time step.
+
+114
+00:08:11,520 --> 00:08:17,040
+ And then sure enough, it can generate, OK, 7.30 David is having breakfast with his family, new time step.
+
+115
+00:08:17,040 --> 00:08:23,160
+ Now, in the game, I'm sure they're probably specifying actually when these new time steps, you know,
+
+116
+00:08:23,160 --> 00:08:26,480
+ if it's like every 10 minutes, every five minutes, that kind of thing.
+
+117
+00:08:26,480 --> 00:08:33,000
+ You can see the large language model is pretty good at sort of working out that, OK, at 7.30 a.m.
+
+118
+00:08:33,000 --> 00:08:40,440
+ You know, he's doing this at 9 a.m. David is opening Jason Sushi restaurant and preparing for the day's customers.
+
+119
+00:08:40,440 --> 00:08:44,320
+ OK, and then I basically say if he's in a conversation, show us the conversation.
+
+120
+00:08:44,320 --> 00:08:47,840
+ So 11.30 he's taking a lunch order from his neighbor.
+
+121
+00:08:47,840 --> 00:08:53,160
+ And we can see that this is the conversation that occurred that, hi, David, I'd like to have some salmon.
+
+122
+00:08:53,160 --> 00:08:57,400
+ So she please, of course, and get a sense of what's going on here.
+
+123
+00:08:57,400 --> 00:08:59,760
+ And we can see there's other conversations going on.
+
+124
+00:08:59,760 --> 00:09:03,320
+ We can actually then ask it to generate a whole bunch of time steps here.
+
+125
+00:09:03,320 --> 00:09:07,040
+ I've asked it to generate 10 between 3 p.m. and 10 p.m.
+
+126
+00:09:07,040 --> 00:09:17,080
+ And you can see, sure enough, it gives these in a nice order and they make sense for the character that we've described that is David is the restaurateur.
+
+127
+00:09:17,080 --> 00:09:19,000
+ And so that's kind of what they're doing here.
+
+128
+00:09:19,000 --> 00:09:27,680
+ Once they create these characters, is they're creating this idea of running it through in a time stamp.
+
+129
+00:09:27,680 --> 00:09:36,840
+ And actually, later on, you see when they get to or jump around a bit, you'll see they're creating this sort of this is going into the eventually going to go into the memory stream of where we can see.
+
+130
+00:09:36,840 --> 00:09:42,680
+ Okay, a timestamp of what the character is doing at the various time, et cetera.
+
+131
+00:09:42,680 --> 00:09:48,480
+ So in the paper, they do talk about that you can actually go in as a character yourself and interact with people.
+
+132
+00:09:48,480 --> 00:09:51,880
+ And that will then change how they interact as well.
+
+133
+00:09:51,880 --> 00:09:56,600
+ Because just as I showed you making the David Bourne, you would have one of these for each of the agents.
+
+134
+00:09:56,600 --> 00:10:00,160
+ And each time they interact, this is where the memory comes in.
+
+135
+00:10:00,160 --> 00:10:03,880
+ So each of them has a memory of what they've done.
+
+136
+00:10:03,880 --> 00:10:09,720
+ And they can go through, they can update that they can use that to plan for the next thing.
+
+137
+00:10:09,720 --> 00:10:18,160
+ So this example sort of day in the life gives them some of the key things that we were talking about with the time steps and stuff like that.
+
+138
+00:10:18,160 --> 00:10:21,600
+ They point out that you start to see these social behaviors.
+
+139
+00:10:21,600 --> 00:10:25,920
+ And for me, what's the really interesting part, though, is this kind of memory system.
+
+140
+00:10:25,920 --> 00:10:30,000
+ So let me look at the diagram and I'll go through it and explain what's going on.
+
+141
+00:10:30,000 --> 00:10:33,080
+ So each character perceives something in the world.
+
+142
+00:10:33,080 --> 00:10:40,800
+ So as we saw this get the GPT-4 explaining what David was doing, that's like him perceiving it.
+
+143
+00:10:40,800 --> 00:10:43,360
+ That gets put into the memory stream.
+
+144
+00:10:43,360 --> 00:10:49,240
+ And the memory stream will look something like this, where you've got time stamps with things that the character actually saw.
+
+145
+00:10:49,240 --> 00:10:55,960
+ It's then got to basically work out how to use these memories and how to take actions.
+
+146
+00:10:55,960 --> 00:10:57,920
+ So to do that, it's got a few different things.
+
+147
+00:10:57,920 --> 00:11:04,640
+ So it's got a way of retrieving memories and we'll look at the user's waiting system to do this.
+
+148
+00:11:04,640 --> 00:11:09,920
+ And then once it's retrieved, those memories, it either makes a plan and if it makes a plan,
+
+149
+00:11:09,920 --> 00:11:15,120
+ that plan gets put back into a sort of memory of its own and or reflects on it.
+
+150
+00:11:15,120 --> 00:11:20,800
+ So the whole idea of the reflection is very cool in that it can take a whole.
+
+151
+00:11:20,800 --> 00:11:24,200
+ You can sort of think about the reflection as being like a summarization.
+
+152
+00:11:24,200 --> 00:11:31,040
+ So it can take a conversation that David has had with someone talking about something for work.
+
+153
+00:11:31,040 --> 00:11:36,280
+ And then it can summarize the key parts of that that David needs to remember.
+
+154
+00:11:36,280 --> 00:11:39,800
+ And that will then go back into a sort of memory system there.
+
+155
+00:11:39,800 --> 00:11:41,560
+ And these retrieved memories.
+
+156
+00:11:41,560 --> 00:11:45,440
+ So this is sort of a loop going around loops going around here.
+
+157
+00:11:45,440 --> 00:11:51,720
+ These retrieved memories are then used with the plan to actually decide what actions to take.
+
+158
+00:11:51,720 --> 00:11:55,400
+ Once it's got those relevant memories, once it's retrieved, those actions,
+
+159
+00:11:55,400 --> 00:11:59,160
+ it determines the action and it takes the next step on this.
+
+160
+00:11:59,160 --> 00:12:05,640
+ So they go in in quite in depth about how they do the memory retrieval for this.
+
+161
+00:12:05,640 --> 00:12:11,640
+ One of the cool things that they mentioned in here is this whole sort of waiting system
+
+162
+00:12:11,640 --> 00:12:17,880
+ of like, how do you actually remember, you know, how do you actually determine what to focus on
+
+163
+00:12:17,880 --> 00:12:19,800
+ and what's important kind of thing.
+
+164
+00:12:19,800 --> 00:12:23,720
+ So you don't want to remember everything because that's just going to clutter it up.
+
+165
+00:12:23,720 --> 00:12:28,520
+ And also the context span of the large language model is going to be too small
+
+166
+00:12:28,520 --> 00:12:31,800
+ for you to put everything in to that context span.
+
+167
+00:12:31,800 --> 00:12:36,760
+ So they use basically a waiting system for doing this.
+
+168
+00:12:36,760 --> 00:12:39,720
+ And this brings up a whole interesting sort of thing as well.
+
+169
+00:12:39,720 --> 00:12:42,520
+ So they wait basically on recency.
+
+170
+00:12:42,520 --> 00:12:46,120
+ So obviously things that are more recent, you're going to remember more.
+
+171
+00:12:46,120 --> 00:12:47,480
+ So they use that.
+
+172
+00:12:47,480 --> 00:12:49,320
+ And then that decays over time.
+
+173
+00:12:49,320 --> 00:12:54,280
+ So further the time steps are you away from that happening, the memory of that will be less.
+
+174
+00:12:54,280 --> 00:12:57,320
+ They do the importance of something.
+
+175
+00:12:57,320 --> 00:13:02,360
+ So if something is important, then you're more likely to remember it.
+
+176
+00:13:02,360 --> 00:13:08,840
+ Also the relevance is something that's going to determine you being able to remember something.
+
+177
+00:13:08,840 --> 00:13:12,200
+ If it's a relevant topic to you, you're more likely to do this.
+
+178
+00:13:12,200 --> 00:13:15,240
+ So you can see that these are the numbers that they're getting.
+
+179
+00:13:15,240 --> 00:13:19,160
+ The importance one is really interesting one because how do you decide what's important?
+
+180
+00:13:19,560 --> 00:13:21,720
+ So they actually give you a prompt.
+
+181
+00:13:21,720 --> 00:13:26,120
+ I've taken this and we've put this into GPT for we can play around with this.
+
+182
+00:13:26,120 --> 00:13:31,160
+ So you can see this is the prompt on a scale of one to 10 where one is purely mundane.
+
+183
+00:13:31,160 --> 00:13:37,400
+ And 10 is extremely poignant rate the poignancy of the following piece of David's memory.
+
+184
+00:13:37,400 --> 00:13:41,400
+ So the memory here would be ordering cleaning supplies for his restaurant
+
+185
+00:13:41,400 --> 00:13:42,520
+ from the supermarket.
+
+186
+00:13:42,520 --> 00:13:44,360
+ That's going to get a rating of two.
+
+187
+00:13:44,360 --> 00:13:48,440
+ And then I say, okay, applying for a loan from the bank for a restaurant expansion.
+
+188
+00:13:48,440 --> 00:13:51,400
+ Now this is something you would expect that would be much more important.
+
+189
+00:13:51,400 --> 00:13:54,120
+ Sure enough, it gets a rating of seven.
+
+190
+00:13:54,120 --> 00:13:57,400
+ Then I was interested to test that with things like that are more personal.
+
+191
+00:13:57,400 --> 00:14:03,560
+ So we can kind of elicit David's values in some ways here that David's son getting in trouble
+
+192
+00:14:03,560 --> 00:14:07,560
+ at school and David having to go to a parent teacher meeting next Tuesday.
+
+193
+00:14:07,560 --> 00:14:09,160
+ Well, that's a six for him.
+
+194
+00:14:09,160 --> 00:14:13,480
+ It's not as important as his expansion, but it's obviously a lot more important than
+
+195
+00:14:13,480 --> 00:14:15,320
+ him ordering the cleaning supplies.
+
+196
+00:14:15,320 --> 00:14:19,080
+ So each of these is just a sort of simple example.
+
+197
+00:14:19,080 --> 00:14:25,000
+ And this could be informed more by the character of David that we set up and we set up in his
+
+198
+00:14:25,000 --> 00:14:26,840
+ values in the prompt as well.
+
+199
+00:14:26,840 --> 00:14:29,080
+ And they may be doing something like that.
+
+200
+00:14:29,080 --> 00:14:33,400
+ The idea once they've got this though, they're able to then sort of work out, okay,
+
+201
+00:14:33,400 --> 00:14:36,600
+ what do you actually pay attention to in these?
+
+202
+00:14:36,600 --> 00:14:43,400
+ And then from these memories, what gets passed to a language model to use for planning
+
+203
+00:14:43,400 --> 00:14:48,680
+ or to use for planning and taking action or for doing reflections.
+
+204
+00:14:48,680 --> 00:14:50,280
+ This is where the reflections come in.
+
+205
+00:14:50,280 --> 00:14:53,880
+ So generic evasions were equipped with only raw observations,
+
+206
+00:14:53,880 --> 00:14:56,440
+ struggle to generalize or make inferences.
+
+207
+00:14:56,440 --> 00:14:58,280
+ So this makes a lot of sense, right?
+
+208
+00:14:58,280 --> 00:15:03,880
+ If you think about it, that when you look at something only at a surface level,
+
+209
+00:15:03,880 --> 00:15:05,080
+ humans don't really do that.
+
+210
+00:15:05,080 --> 00:15:10,040
+ We tend to think things through and think how do they relate to other things in our life?
+
+211
+00:15:10,040 --> 00:15:14,520
+ How, you know, what information was more important, that kind of thing.
+
+212
+00:15:14,520 --> 00:15:16,280
+ And this is where the reflection comes in.
+
+213
+00:15:16,280 --> 00:15:21,560
+ So it can take things like conversations and actions and stuff like that.
+
+214
+00:15:21,560 --> 00:15:26,440
+ And it can reflect on the higher level, more abstract thoughts from this.
+
+215
+00:15:26,440 --> 00:15:30,120
+ This is where they basically generate more thoughts doing this.
+
+216
+00:15:30,120 --> 00:15:35,640
+ And this is done through, they talk about here using a prompt where given only the information
+
+217
+00:15:35,640 --> 00:15:41,960
+ above, what are the three most salient high level questions we can answer about the subjects
+
+218
+00:15:41,960 --> 00:15:42,760
+ in the statements.
+
+219
+00:15:42,760 --> 00:15:48,920
+ And they give some examples of talking to people, talking to this class smaller.
+
+220
+00:15:48,920 --> 00:15:55,080
+ And he's obviously perhaps in the conversation talking at a very low level, you know,
+
+221
+00:15:55,080 --> 00:15:57,800
+ about his research project and stuff like that.
+
+222
+00:15:57,800 --> 00:16:01,080
+ The high level stuff is that he's writing a research paper.
+
+223
+00:16:01,080 --> 00:16:02,920
+ He enjoys reading a book.
+
+224
+00:16:02,920 --> 00:16:05,080
+ He's conversing with these people, right?
+
+225
+00:16:05,080 --> 00:16:08,440
+ There's different things that are, you know, much more high level.
+
+226
+00:16:08,440 --> 00:16:13,560
+ And they're kind of like the summarizations of the key things that we would pass into the
+
+227
+00:16:13,560 --> 00:16:19,640
+ language model for doing the planning and doing the action steps that are in here.
+
+228
+00:16:19,640 --> 00:16:22,280
+ Finally, coming to the planning and reacting.
+
+229
+00:16:22,280 --> 00:16:28,440
+ Again, this is done through having a sequence, you know, they generate a sequence of future
+
+230
+00:16:28,440 --> 00:16:30,120
+ actions for the agent.
+
+231
+00:16:30,120 --> 00:16:34,520
+ And they try to, you know, the goal is to keep the agent's behavior consistent over time.
+
+232
+00:16:34,520 --> 00:16:37,800
+ A plan includes a location, a starting time, a duration.
+
+233
+00:16:37,800 --> 00:16:43,960
+ So that could be one of the characters going to the park and painting for four hours.
+
+234
+00:16:43,960 --> 00:16:49,080
+ So you've got the location, you've got what the actual action is doing, a starting time,
+
+235
+00:16:49,080 --> 00:16:50,520
+ duration in there.
+
+236
+00:16:50,520 --> 00:16:55,240
+ So they mentioned that like reflections, plans are stored in the memory stream and are
+
+237
+00:16:55,240 --> 00:16:57,560
+ included in the retrieval process.
+
+238
+00:16:57,560 --> 00:17:03,960
+ This allows the agent to consider observations, reflections and plans all together when deciding
+
+239
+00:17:03,960 --> 00:17:05,320
+ on how to behave.
+
+240
+00:17:05,320 --> 00:17:08,040
+ So agents might change their plans midstream as well.
+
+241
+00:17:08,040 --> 00:17:12,520
+ So as they're doing these reflection things, as they're doing the planning, they're using
+
+242
+00:17:12,520 --> 00:17:16,600
+ this memory and they're sort of putting it in there just through generating it.
+
+243
+00:17:16,600 --> 00:17:22,040
+ You can see in here, they've given some examples based on this, what would actually be some of
+
+244
+00:17:22,040 --> 00:17:22,680
+ the plans.
+
+245
+00:17:22,680 --> 00:17:27,480
+ And we can see that, okay, the plan might be to wake up, complete morning routine, go to
+
+246
+00:17:27,480 --> 00:17:27,960
+ college.
+
+247
+00:17:27,960 --> 00:17:33,160
+ So this is for the student, you know, work on the particular projects from this time to
+
+248
+00:17:33,160 --> 00:17:33,880
+ this time.
+
+249
+00:17:33,880 --> 00:17:36,360
+ It gives you a nice plan for this.
+
+250
+00:17:36,360 --> 00:17:43,000
+ And then that would be fed in with what we looked up earlier on to generate the next
+
+251
+00:17:43,000 --> 00:17:44,280
+ time steps.
+
+252
+00:17:44,280 --> 00:17:48,440
+ So the next time steps might change if they bump into someone.
+
+253
+00:17:48,440 --> 00:17:52,440
+ But if they're just by themselves, they're probably going to stick to their plan over
+
+254
+00:17:52,440 --> 00:17:53,000
+ time.
+
+255
+00:17:53,000 --> 00:17:56,680
+ And you can see this, they talk about, you know, reacting and updating to plans.
+
+256
+00:17:56,680 --> 00:17:58,440
+ They operate in an action loop.
+
+257
+00:17:58,440 --> 00:18:03,000
+ So one of the big things is to understand this sort of game loop that's going on.
+
+258
+00:18:03,000 --> 00:18:09,800
+ That at each point, like a new time is set, and all the characters or all the agents go
+
+259
+00:18:09,800 --> 00:18:16,360
+ through and run their evaluation and their planning and looking at their action and return
+
+260
+00:18:16,360 --> 00:18:21,880
+ that that actually is getting stored in kind of like a graph or a tree structure that's
+
+261
+00:18:21,880 --> 00:18:25,320
+ used to in Jason to actually plot all this out.
+
+262
+00:18:25,320 --> 00:18:30,920
+ So when we're looking at this, if I come down here, we want to find, let's say we find this
+
+263
+00:18:30,920 --> 00:18:32,520
+ character running around.
+
+264
+00:18:32,520 --> 00:18:38,040
+ This is actually all just using a game engine called phaser that they're using to do this.
+
+265
+00:18:38,040 --> 00:18:43,880
+ And my guess is that they've gone through, they may have made it from scratch, or they've
+
+266
+00:18:43,880 --> 00:18:46,360
+ they may have taken one of the tutorials and edited it.
+
+267
+00:18:46,360 --> 00:18:51,000
+ You can see there are some examples of tutorials in here of how to build something a little
+
+268
+00:18:51,000 --> 00:18:52,280
+ bit sort of like this.
+
+269
+00:18:52,280 --> 00:18:59,320
+ And using this, this is just plot, this is basically just rendering out from Jason.
+
+270
+00:18:59,320 --> 00:19:04,280
+ So they do talk about in here that the goal of what they're doing is that this environment is
+
+271
+00:19:04,280 --> 00:19:10,440
+ built with phaser that they're using Jason to actually store this and the sandbox it.
+
+272
+00:19:10,440 --> 00:19:15,400
+ And then they kind of flatten out the Jason for feeding it into large language models.
+
+273
+00:19:15,400 --> 00:19:19,560
+ So if there are certain things that you know they need from the Jason, they've obviously got some
+
+274
+00:19:19,560 --> 00:19:24,600
+ ways of deciding what they need and then taking those things and flattening them out.
+
+275
+00:19:24,600 --> 00:19:29,000
+ There's a lot of engineering to this, not just AI stuff.
+
+276
+00:19:29,000 --> 00:19:32,040
+ There's a lot of really interesting sort of engineering going on in here.
+
+277
+00:19:32,040 --> 00:19:35,080
+ And yeah, they talk about how they put all this together.
+
+278
+00:19:35,080 --> 00:19:37,480
+ It is interesting to look at the prompts that they use.
+
+279
+00:19:37,480 --> 00:19:40,440
+ So one of the things I haven't covered is the dialogue.
+
+280
+00:19:40,440 --> 00:19:46,520
+ So they've got a whole sort of dialogue system of where they're basically just sort of kicking
+
+281
+00:19:46,520 --> 00:19:50,920
+ it off with a prompt and seeing, okay, what do they get back from the dialogue.
+
+282
+00:19:50,920 --> 00:19:57,000
+ Those dialogues are fed into the memory of each of the agents that was involved in that
+
+283
+00:19:57,000 --> 00:20:03,160
+ dialogue. That's where you get things like the Valentine's Day party is a dialogue of where one
+
+284
+00:20:03,160 --> 00:20:07,480
+ agent says to another one, hey, there's this party, it's on at this time.
+
+285
+00:20:07,480 --> 00:20:11,000
+ And then that goes into the person who's listening's memory.
+
+286
+00:20:11,000 --> 00:20:13,720
+ And then they're able to use that to tell another agent.
+
+287
+00:20:13,720 --> 00:20:17,480
+ That's how it actually happens as we're going through this.
+
+288
+00:20:17,480 --> 00:20:20,360
+ Anyway, unconscious, I've gone very long on this video.
+
+289
+00:20:20,360 --> 00:20:23,080
+ I have a read of the paper.
+
+290
+00:20:23,080 --> 00:20:26,760
+ Just try coming and try some of the ideas out in something like chat.
+
+291
+00:20:26,760 --> 00:20:31,000
+ She they actually use chat GPT, not GPT for for doing this.
+
+292
+00:20:31,000 --> 00:20:35,560
+ And you can see that with just a little bit of playing with GPT for I was able to get this
+
+293
+00:20:35,560 --> 00:20:37,960
+ generating similar kinds of things.
+
+294
+00:20:37,960 --> 00:20:42,840
+ So it does show that this is something that you could go through the paper and reproduce
+
+295
+00:20:42,840 --> 00:20:44,040
+ if you want to.
+
+296
+00:20:44,040 --> 00:20:49,880
+ It's fun to just come back and look at the game itself and see what's going on, what they're doing.
+
+297
+00:20:49,880 --> 00:20:52,760
+ We can see what's this person doing.
+
+298
+00:20:52,760 --> 00:20:56,440
+ If we look down here, we can see, okay, this is where they are.
+
+299
+00:20:56,440 --> 00:20:59,000
+ This is the conversation that they've got going on.
+
+300
+00:20:59,000 --> 00:21:00,600
+ And we can see they're changing over time.
+
+301
+00:21:00,600 --> 00:21:00,920
+ Right.
+
+302
+00:21:00,920 --> 00:21:03,880
+ So if I pause it, we can stop it and look at it.
+
+303
+00:21:03,880 --> 00:21:08,840
+ But we can see that if we follow one of these characters, we can see what's going on with them
+
+304
+00:21:08,840 --> 00:21:09,400
+ over time.
+
+305
+00:21:09,400 --> 00:21:14,040
+ And this is just being rendered from the Jason, right, that we're looking at.
+
+306
+00:21:14,040 --> 00:21:18,200
+ This is obviously, you know, probably not playing out in real time.
+
+307
+00:21:18,200 --> 00:21:21,000
+ It's been created first with the language models.
+
+308
+00:21:21,000 --> 00:21:25,000
+ I imagine that all the calls to the different language models might take a little bit of time.
+
+309
+00:21:25,000 --> 00:21:29,240
+ But once they've got this, they can then render out a whole day or something quite easily.
+
+310
+00:21:29,240 --> 00:21:30,520
+ All right.
+
+311
+00:21:30,520 --> 00:21:37,160
+ So that was the paper, generative agents, interactive simulacra of human behavior.
+
+312
+00:21:37,160 --> 00:21:40,280
+ Very cool paper, I think, some really interesting ideas.
+
+313
+00:21:40,280 --> 00:21:44,280
+ You're definitely going to see this kind of thing happen and coming to sort of non-player
+
+314
+00:21:44,280 --> 00:21:45,720
+ characters in games.
+
+315
+00:21:45,720 --> 00:21:51,400
+ Also, a lot of uses for simulation and interactive role play with humans.
+
+316
+00:21:51,400 --> 00:21:56,040
+ So allowing humans to try out different things before they actually do it in the real world
+
+317
+00:21:56,040 --> 00:21:58,440
+ is a really good use for this kind of technology.
+
+318
+00:21:58,440 --> 00:22:02,600
+ As always, if you have any questions, please put them in the comments below.
+
+319
+00:22:02,600 --> 00:22:07,320
+ If you found this video useful, please click like and subscribe.
+
+320
+00:22:07,320 --> 00:22:08,920
+ I will see you in the next video.
+
+321
+00:22:08,920 --> 00:22:09,560
+ Bye for now.
+
+322
+00:22:09,560 --> 00:22:19,560
+ [BLANK_AUDIO]
+

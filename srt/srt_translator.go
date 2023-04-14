@@ -2,6 +2,10 @@ package srt
 
 import (
 	"context"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/hewenyu/translate"
 )
@@ -41,13 +45,29 @@ func (t *SrtTranslator) Translate(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-
 		//输出字幕
 		if t.srtSwitch {
 			srtParser.data[k].Text = append(srtParser.data[k].Text, translateText)
 		} else {
 			srtParser.data[k].Text = []string{translateText}
 		}
+	}
+
+	// export to new file
+	newFilePath := fmt.Sprintf("%s.%s.%s.srt", strings.TrimSuffix(t.filePath, filepath.Ext(t.filePath)), t.from, t.to)
+
+	buf := srtParser.Export()
+
+	// write to file
+	fd, err := os.Create(newFilePath)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+
+	_, err = fd.Write(buf.Bytes())
+	if err != nil {
+		return err
 	}
 	return nil
 }

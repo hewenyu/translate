@@ -2,6 +2,7 @@ package srt
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 	"regexp"
@@ -16,11 +17,6 @@ type SrtLine struct {
 	TimeStart string   //字幕开始时间戳
 	TimeEnd   string   //字幕结束时间戳
 	Text      []string //字幕文本
-}
-
-// SrtAttr 字幕属性
-type SrtAttr struct {
-	line int // 字幕行数
 }
 
 // 字幕解析器
@@ -62,9 +58,11 @@ func (p *SrtParser) Parse() error {
 	for scanner.Scan() {
 		// get line
 		text, dataType, err := p.ParseLine(scanner.Text())
+
 		if err != nil {
 			return err
 		}
+		fmt.Println(text, dataType)
 		switch dataType {
 		case SrtContentNum:
 			// 这个字幕有序号
@@ -137,6 +135,22 @@ func (p *SrtParser) ParseLine(line string) (text string, dataType SrtContent, er
 	return text, SrtContentText, nil
 }
 
+// Export 导出字幕
+func (p *SrtParser) Export() bytes.Buffer {
+	var content bytes.Buffer
+	for k := range p.data {
+		if p.hasNum {
+			content.WriteString(fmt.Sprintf("%s\n", p.data[k].Number))
+		}
+		content.WriteString(fmt.Sprintf("%s --> %s\n", p.data[k].TimeStart, p.data[k].TimeEnd))
+		for _, v := range p.data[k].Text {
+			content.WriteString(fmt.Sprintf("%s\n", v))
+		}
+		content.WriteString("\n")
+	}
+	return content
+}
+
 // IsNumber 判断字符串是否为数字
 func IsNumber(s string) bool {
 	for _, c := range s {
@@ -150,9 +164,9 @@ func IsNumber(s string) bool {
 // IsTime 判断字符串是否为时间
 func IsTime(s string) bool {
 	// format like : 00:01:57.816 --> 00:02:01.576 A:middle align	X1:0.000000	X2:0.000000	Y1:0.000000	Y2:0.000000
-	pattern := `^\d{2}:\d{2}:\d{2}\.\d{3} --> \d{2}:\d{2}:\d{2}\.\d{3}.*$`
+	// format likt 00:00:00,000 --> 00:00:08,160
 	// check time format by regexp
-	if ok, _ := regexp.MatchString(pattern, s); ok {
+	if ok, _ := regexp.MatchString(MatchString, s); ok {
 		return true
 	}
 
@@ -161,9 +175,9 @@ func IsTime(s string) bool {
 
 func GetTime(s string) (start, end string, err error) {
 	// format like : 00:01:57.816 --> 00:02:01.576 A:middle align	X1:0.000000	X2:0.000000	Y1:0.000000	Y2:0.000000
-	pattern := `^(\d{2}:\d{2}:\d{2}\.\d{3}) --> (\d{2}:\d{2}:\d{2}\.\d{3}).*$`
+	// format likt 00:00:00,000 --> 00:00:08,160
 	// check time format by regexp
-	if ok, _ := regexp.MatchString(pattern, s); ok {
+	if ok, _ := regexp.MatchString(MatchString, s); ok {
 		// get time
 		start = strings.Split(s, " --> ")[0]
 		end = strings.Split(s, " --> ")[1]
