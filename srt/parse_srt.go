@@ -31,6 +31,7 @@ type SrtParser struct {
 	filePath string     // 字幕文件路径
 	data     []*SrtLine // 字幕数据
 	count    int        // 计数器
+	start    bool       // 是否开始
 }
 
 // NewSrtParser 创建一个新的 Srt 解析器
@@ -67,6 +68,9 @@ func (p *SrtParser) Parse() error {
 		}
 		switch dataType {
 		case SrtContentNum:
+			if !p.start {
+				p.start = true
+			}
 			// check line is number
 			if IsNumber(text) {
 				// add new line
@@ -76,6 +80,9 @@ func (p *SrtParser) Parse() error {
 				})
 			}
 		case SrtContentTime:
+			if !p.start {
+				continue
+			}
 			// check line is time
 			if IsTime(text) {
 				// get time
@@ -89,6 +96,9 @@ func (p *SrtParser) Parse() error {
 				fmt.Println(start, end)
 			}
 		case SrtContentText:
+			if !p.start {
+				continue
+			}
 			// check line is text
 			if text != "" {
 				// add text
