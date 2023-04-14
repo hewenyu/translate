@@ -11,15 +11,11 @@ import (
 
 // SrtLine 字幕行结构
 type SrtLine struct {
-	ID                   int      //字幕自然行id
-	Number               string   //字幕序号
-	TimeStart            string   //字幕开始时间戳
-	TimeStartSecond      float64  //字幕开始（秒）
-	TimeStartMilliSecond int64    //字幕开始（毫秒）
-	TimeEnd              string   //字幕结束时间戳
-	TimeEndSecond        float64  //字幕结束（秒）
-	TimeEndMilliSecond   int64    //字幕结束（毫秒）
-	Text                 []string //字幕文本
+	ID        int      //字幕自然行id
+	Number    string   //字幕序号
+	TimeStart string   //字幕开始时间戳
+	TimeEnd   string   //字幕结束时间戳
+	Text      []string //字幕文本
 }
 
 // SrtAttr 字幕属性
@@ -104,7 +100,6 @@ func (p *SrtParser) Parse() error {
 				// add time
 				p.data[len(p.data)-1].TimeStart = start
 				p.data[len(p.data)-1].TimeEnd = end
-				fmt.Println(start, end)
 			}
 		case SrtContentText:
 			if !p.start {
@@ -116,7 +111,8 @@ func (p *SrtParser) Parse() error {
 				p.data[len(p.data)-1].Text = append(p.data[len(p.data)-1].Text, text)
 			}
 		default:
-			// do nothing
+			// stop parse
+			p.start = false
 		}
 		p.count++
 	}
