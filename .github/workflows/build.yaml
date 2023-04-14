@@ -17,8 +17,6 @@ on:
 jobs:
   ubuntu-latest:
     runs-on: ubuntu-latest
-    outputs:
-      zip-path: ${{ steps.Build.outputs.zip-path }}
     steps:
       - name: setenv
         uses: actions/setup-go@v3
@@ -33,14 +31,11 @@ jobs:
           make cmd
           ls build/
           zip -r translate-linux.zip build/
-          echo "::set-output name=zip-path::translate-linux.zip"
+          echo "linux_zip_path=translate-linux.zip" >> $env:GITHUB_OUTPUT
 
 
   macOS-latest:
     runs-on: macos-latest
-    outputs:
-      zip-path: ${{ steps.Build.outputs.zip-path }}
-
     steps:
       - name: setenv
         uses: actions/setup-go@v3
@@ -55,13 +50,11 @@ jobs:
           make cmd
           ls build/
           zip -r translate-drawin.zip build/
-          echo "::set-output name=zip-path::translate-drawin.zip"
+          echo "macOS_zip_path=translate-drawin.zip" >> $env:GITHUB_OUTPUT
 
 
   windows:
     runs-on: windows-latest
-    outputs:
-      zip-path: ${{ steps.Build.outputs.zip-path }}
 
     strategy:
       matrix:
@@ -88,7 +81,8 @@ jobs:
           make cmd
           ls build/
           Compress-Archive -Path ./build -DestinationPath translate-${{ matrix.arch }}.zip
-          echo "::set-output name=zip-path::translate-${{ matrix.arch }}.zip"
+          echo "win_${{ matrix.arch }}_zip_path=translate-${{ matrix.arch }}.zip" >> $env:GITHUB_OUTPUT
+          
 
 
   
@@ -118,28 +112,20 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          linux_zip_path: ${{ needs.ubuntu-latest.outputs.outputs.linux_zip_path }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ needs.ubuntu-latest.outputs.zip-path }}
-          asset_name: linux.zip
+          asset_path: ${{ needs.ubuntu-latest.outputs.outputs.linux_zip_path }}
+          asset_name: ${{ needs.ubuntu-latest.outputs.outputs.linux_zip_path }}
           asset_content_type: application/zip
 
       - name: Upload macOS Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          macOS_zip_path: ${{ steps.macOS-latest.outputs.macOS_zip_path }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ needs.macOS-latest.outputs.zip-path }}
-          asset_name: macos.zip
+          asset_path: ${{ needs.macOS-latest.outputs.macOS_zip_path }}
+          asset_name: ${{ needs.macOS-latest.outputs.macOS_zip_path }}
           asset_content_type: application/zip
-
-      # - name: Upload Windows ZIP
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ${{ needs.build-macos.outputs.zip-path }}
-      #     asset_name: translate-${{ matrix.arch }}.zip
-      #     asset_content_type: application/zip
