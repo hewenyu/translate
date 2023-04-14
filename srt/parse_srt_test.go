@@ -1,6 +1,7 @@
 package srt
 
 import (
+	"context"
 	"testing"
 
 	"github.com/hewenyu/translate/auzer"
@@ -24,9 +25,8 @@ func TestParseSrt(t *testing.T) {
 	translateFactor := auzer.NewAuzerTranslator(resourceKey, endpoint, region)
 	srtTranslator := NewSrtTranslator(filePath, "zh", "en", translateFactor, true)
 
-	err := srtTranslator.Translate()
+	err := srtTranslator.Translate(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
-
 }
