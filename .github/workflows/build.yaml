@@ -31,12 +31,36 @@ jobs:
         run: |
           make cmd
           ls build/
+          zip -r translate-linux.zip build/
 
-      - name: Upload binaries
-        uses: actions/upload-artifact@v3
+      # - name: Upload binaries
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: translate-linux
+      #     path: build/
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: translate-linux
-          path: build/
+          tag_name: v1.0.0
+          release_name: Release v1.0.0
+          body: |
+            Release v1.0.0.
+          draft: false
+          prerelease: false
+      
+      - name: Upload Linux ZIP
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./translate-linux.zip
+          asset_name: translate-linux.zip
+          asset_content_type: application/zip
 
   macOS-latest:
     runs-on: macos-latest
@@ -54,12 +78,23 @@ jobs:
         run: |
           make cmd
           ls build/
+          zip -r translate-drawin.zip build/
 
-      - name: Upload binaries
-        uses: actions/upload-artifact@v3
+      # - name: Upload binaries
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: translate-drawin
+      #     path: build/
+      
+      - name: Upload macOS ZIP
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: translate-drawin
-          path: build/
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./translate-drawin.zip
+          asset_name: translate-drawin.zip
+          asset_content_type: application/zip
 
   windows:
     runs-on: windows-latest
@@ -88,9 +123,20 @@ jobs:
         run: |
           make cmd
           ls build/
+          Compress-Archive -Path ./build -DestinationPath translate-${{ matrix.arch }}.zip
 
-      - name: Upload binaries
-        uses: actions/upload-artifact@v3
+      # - name: Upload binaries
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: translate-${{ matrix.arch }}
+      #     path: build/
+
+      - name: Upload Windows ZIP
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: translate-${{ matrix.arch }}
-          path: build/
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./translate-${{ matrix.arch }}.zip
+          asset_name: translate-${{ matrix.arch }}.zip
+          asset_content_type: application/zip
