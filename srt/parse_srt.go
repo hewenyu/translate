@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -28,18 +29,21 @@ type SrtAttr struct {
 
 // 字幕解析器
 type SrtParser struct {
-	filePath string     // 字幕文件路径
-	data     []*SrtLine // 字幕数据
-	count    int        // 计数器
-	start    bool       // 是否开始
+	filePath  string     // 字幕文件路径
+	data      []*SrtLine // 字幕数据
+	count     int        // 计数器
+	start     bool       // 是否开始
+	dataCount int        // 字幕数据计数器
+	hasNum    bool       // 是否有序号
 }
 
 // NewSrtParser 创建一个新的 Srt 解析器
 func NewSrtParser(f string) *SrtParser {
 	return &SrtParser{
-		filePath: f,
-		data:     make([]*SrtLine, 0),
-		count:    0,
+		filePath:  f,
+		data:      make([]*SrtLine, 0),
+		count:     0,
+		dataCount: 0,
 	}
 }
 
@@ -60,7 +64,6 @@ func (p *SrtParser) Parse() error {
 	scanner := bufio.NewScanner(data)
 
 	for scanner.Scan() {
-		// fmt.Println(scanner.Text())
 		// get line
 		text, dataType, err := p.ParseLine(scanner.Text())
 		if err != nil {
@@ -68,6 +71,8 @@ func (p *SrtParser) Parse() error {
 		}
 		switch dataType {
 		case SrtContentNum:
+			// 这个字幕有序号
+			p.hasNum = true
 			if !p.start {
 				p.start = true
 			}
@@ -80,8 +85,14 @@ func (p *SrtParser) Parse() error {
 				})
 			}
 		case SrtContentTime:
-			if !p.start {
-				continue
+			if !p.start && !p.hasNum {
+				// 部分字幕没有序号，直接开始时间
+				p.start = true
+				p.data = append(p.data, &SrtLine{
+					ID:     p.count,
+					Number: strconv.Itoa(p.dataCount),
+				})
+				p.dataCount++
 			}
 			// check line is time
 			if IsTime(text) {
