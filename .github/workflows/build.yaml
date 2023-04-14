@@ -92,5 +92,5 @@ jobs:
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
-          name: translate-{{matrix.arch}}
+          name: translate-${{ matrix.arch }}
           path: build/
