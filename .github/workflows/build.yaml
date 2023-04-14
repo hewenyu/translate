@@ -112,20 +112,18 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          linux_zip_path: ${{ needs.ubuntu-latest.outputs.outputs.linux_zip_path }}
+          asset_path: ${{ needs.ubuntu-latest.outputs.outputs.linux_zip_path }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.linux_zip_path }}
-          asset_name: ${{ env.linux_zip_path }}
+          asset_name: translate-linux.zip
           asset_content_type: application/zip
 
       - name: Upload macOS Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          macOS_zip_path: ${{ needs.macOS-latest.outputs.macOS_zip_path }}
+          asset_path: ${{ needs.macOS-latest.outputs.macOS_zip_path }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.macOS_zip_path }}
-          asset_name: ${{ env.macOS_zip_path }}
+          asset_name: translate-drawin.zip
           asset_content_type: application/zip
