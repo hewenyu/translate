@@ -25,15 +25,9 @@ jobs:
       - name: Clone
         uses: actions/checkout@v1
 
-      - name: Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install build-essential
-          sudo apt-get install libsdl2-dev
-
       - name: Build
         run: |
-          make all
+          make cmd
           ls build/
 
       - name: Upload binaries
@@ -54,14 +48,9 @@ jobs:
       - name: Clone
         uses: actions/checkout@v1
 
-      - name: Dependencies
-        run: |
-          brew update
-          brew install sdl2
-
       - name: Build
         run: |
-          make all
+          make cmd
           ls build/
 
       - name: Upload binaries
