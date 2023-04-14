@@ -7,6 +7,14 @@ BUILD_DIR := build
 CMD_DIR := $(wildcard cmd/*)
 BUILD_FLAGS = -ldflags "-s -w" 
 
+
+# Determine file extension based on OS
+ifeq ($(OS),Windows_NT)
+    EXT := .exe
+else
+    EXT :=
+endif
+
 # Targets
 all: clean cmd
 
@@ -15,7 +23,7 @@ cmd: $(wildcard cmd/*)
 
 $(CMD_DIR): dependencies mkdir
 	@echo Build cmd $(notdir $@)
-	@${GO} build ${BUILD_FLAGS} -o ${BUILD_DIR}/$(notdir $@) ./$@
+	@${GO} build ${BUILD_FLAGS} -o ${BUILD_DIR}/$(notdir $@)${EXT} ./$@
 
 FORCE:
 
