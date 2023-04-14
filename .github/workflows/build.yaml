@@ -1,9 +1,16 @@
 name: CI
 
+
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# on:
+#   push:
+#     tags:
+#       - "v*.*.*"
 
 jobs:
   ubuntu-latest:
@@ -32,6 +39,10 @@ jobs:
   macOS-latest:
     runs-on: macOS-latest
 
+    strategy:
+      matrix:
+        build: [Release]
+
     steps:
       - name: setenv
         uses: actions/setup-go@v3
@@ -52,35 +63,35 @@ jobs:
           name: translate-drawin
           path: build/
 
-  windows-latest:
-    runs-on: windows-latest
+  # windows-latest:
+  #   runs-on: windows-latest
 
-    strategy:
-      matrix:
-        build: [Release]
-        arch: [Win32, x64]
-        include:
-          - arch: Win32
-            s2arc: x86
-          - arch: x64
-            s2arc: x64
+  #   strategy:
+  #     matrix:
+  #       build: [Release]
+  #       arch: [Win32, x64]
+  #       include:
+  #         - arch: Win32
+  #           s2arc: x86
+  #         - arch: x64
+  #           s2arc: x64
 
-    steps:
-      - name: setenv
-        uses: actions/setup-go@v3
-        with:
-          go-version: '^1.19'
+  #   steps:
+  #     - name: setenv
+  #       uses: actions/setup-go@v3
+  #       with:
+  #         go-version: '^1.19'
           
-      - name: Clone
-        uses: actions/checkout@v1
+  #     - name: Clone
+  #       uses: actions/checkout@v1
 
-      - name: Build
-        run: |
-          make all
-          ls build/
+  #     - name: Build
+  #       run: |
+  #         make all
+  #         ls build/
 
-      - name: Upload binaries
-        uses: actions/upload-artifact@v3
-        with:
-          name: translate-${{ matrix.arch }}
-          path: build/
+  #     - name: Upload binaries
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: translate-${{ matrix.arch }}
+  #         path: build/
