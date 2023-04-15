@@ -21,6 +21,7 @@ jobs:
       zip_path: ${{ steps.Build.outputs.zip_path }}
     steps:
       - name: setenv
+        id: setenv
         uses: actions/setup-go@v3
         with:
           go-version: '^1.19'
@@ -29,11 +30,16 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Build
+        id: build
         run: |
           make cmd
           ls build/
-          zip -r translate-linux.zip build/
-          echo "zip_path=translate-linux.zip" >> $env:GITHUB_OUTPUT
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: translate-linux
+          path: build/
 
 
   macOS-latest:
@@ -42,6 +48,7 @@ jobs:
       zip_path: ${{ steps.Build.outputs.zip_path }}
     steps:
       - name: setenv
+        id: setenv
         uses: actions/setup-go@v3
         with:
           go-version: '^1.19'
@@ -50,12 +57,16 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Build
+        id: build
         run: |
           make cmd
           ls build/
-          zip -r translate-drawin.zip build/
-          echo "zip_path=translate-drawin.zip" >> $env:GITHUB_OUTPUT
 
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: translate-drawin
+          path: build/
 
   windows:
     runs-on: windows-latest
@@ -84,7 +95,12 @@ jobs:
         run: |
           make cmd
           ls build/
-          Compress-Archive -Path ./build -DestinationPath translate-${{ matrix.arch }}.zip
+      
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: translate-${{ matrix.arch }}
+          path: build/
           
 
 
@@ -111,24 +127,36 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Linux Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ZIP_PATH: ${{ needs.ubuntu-latest.outputs.zip_path }}
+      - name: Download Linux artifact
+        id: download-linux-artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.ZIP_PATH }}
-          asset_name: ${{ env.ZIP_PATH }}
-          asset_content_type: application/zip
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          name: translate-linux.zip
+          repo: ${{ github.repository }}
 
-      - name: Upload macOS Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ZIP_PATH: ${{ needs.macOS-latest.outputs.zip_path }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.ZIP_PATH }}
-          sset_name: ${{ env.ZIP_PATH }}
-          asset_content_type: application/zip
+      - name: Get Relase
+        run: |
+          ls
+
+      # - name: Upload Linux Asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     ZIP_PATH: ${{ needs.ubuntu-latest.outputs.zip_path }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ${{ env.ZIP_PATH }}
+      #     asset_name: ${{ env.ZIP_PATH }}
+      #     asset_content_type: application/zip
+
+      # - name: Upload macOS Asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     ZIP_PATH: ${{ needs.macOS-latest.outputs.zip_path }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ${{ env.ZIP_PATH }}
+      #     sset_name: ${{ env.ZIP_PATH }}
+      #     asset_content_type: application/zip
