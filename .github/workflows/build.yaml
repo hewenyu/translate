@@ -27,7 +27,7 @@ jobs:
           go-version: '^1.19'
     
       - name: Clone
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build
         id: build
@@ -55,7 +55,7 @@ jobs:
           go-version: '^1.19'
           
       - name: Clone
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build
         id: build
@@ -91,7 +91,7 @@ jobs:
           go-version: '^1.19'
           
       - name: Clone
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build
         run: |
