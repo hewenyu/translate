@@ -1,16 +1,16 @@
 name: CI
 
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
 # on:
 #   push:
-#     tags:
-#       - "v*.*.*"
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
 
 
 
@@ -27,7 +27,7 @@ jobs:
           go-version: '^1.19'
     
       - name: Clone
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Build
         id: build
@@ -54,7 +54,7 @@ jobs:
           go-version: '^1.19'
           
       - name: Clone
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Build
         id: build
@@ -111,47 +111,20 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: v1.0.0
-      #     release_name: Release v1.0.0
-      #     body: |
-      #       Release v1.0.0
-      #     draft: false
-      #     prerelease: false
-
       - name: Download artifact
         uses: actions/download-artifact@v3
+        with:
+          path: artifact
 
       - name: Display structure of downloaded files
         run: ls -R
 
-
-      # - name: Upload Linux Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     ZIP_PATH: ${{ needs.ubuntu-latest.outputs.zip_path }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ${{ env.ZIP_PATH }}
-      #     asset_name: ${{ env.ZIP_PATH }}
-      #     asset_content_type: application/zip
-
-      # - name: Upload macOS Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     ZIP_PATH: ${{ needs.macOS-latest.outputs.zip_path }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ${{ env.ZIP_PATH }}
-      #     sset_name: ${{ env.ZIP_PATH }}
-      #     asset_content_type: application/zip
+      - name: Release
+        uses: softprops/action-gh-release@v0.1.15
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            translate-Win32
+            translate-drawin
+            translate-linux
+            translate-x64
