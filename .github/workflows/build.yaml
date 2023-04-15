@@ -62,7 +62,7 @@ jobs:
         run: |
           make cmd
           ls build/
-          zip -r translate-linux.zip build/
+          zip -r translate-drawin.zip build/
 
       - name: Upload binaries
         uses: actions/upload-artifact@v3
@@ -125,7 +125,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            translate-Win32.zip
-            translate-drawin.zip
-            translate-linux.zip
-            translate-x64.zip
+            artifact/translate-Win32.zip
+            artifact/translate-drawin.zip
+            artifact/translate-linux.zip
+            artifact/translate-x64.zip
