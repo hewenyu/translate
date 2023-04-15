@@ -34,12 +34,12 @@ jobs:
         run: |
           make cmd
           ls build/
+          zip -r translate-linux.zip build/
 
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
-          name: translate-linux
-          path: build/
+          name: translate-linux.zip
 
 
   macOS-latest:
@@ -61,12 +61,12 @@ jobs:
         run: |
           make cmd
           ls build/
+          zip -r translate-linux.zip build/
 
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
-          name: translate-drawin
-          path: build/
+          name: translate-drawin.zip
 
   windows:
     runs-on: windows-latest
@@ -95,11 +95,12 @@ jobs:
         run: |
           make cmd
           ls build/
+          Compress-Archive -Path ./build -DestinationPath translate-${{ matrix.arch }}.zip
       
       - name: Upload binaries
         uses: actions/upload-artifact@v3
         with:
-          name: translate-${{ matrix.arch }}
+          name: translate-${{ matrix.arch }}.zip
           path: build/
           
 
@@ -124,7 +125,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            translate-Win32
-            translate-drawin
-            translate-linux
-            translate-x64
+            translate-Win32.zip
+            translate-drawin.zip
+            translate-linux.zip
+            translate-x64.zip
