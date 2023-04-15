@@ -118,8 +118,8 @@ jobs:
           ZIP_PATH: ${{ needs.ubuntu-latest.outputs.zip_path }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ ZIP_PATH }}
-          asset_name: ${{ ZIP_PATH }}
+          asset_path: ${{ env.ZIP_PATH }}
+          asset_name: ${{ env.ZIP_PATH }}
           asset_content_type: application/zip
 
       - name: Upload macOS Asset
@@ -129,6 +129,6 @@ jobs:
           ZIP_PATH: ${{ needs.macOS-latest.outputs.zip_path }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ ZIP_PATH }}
-          sset_name: ${{ ZIP_PATH }}
+          asset_path: ${{ env.ZIP_PATH }}
+          sset_name: ${{ env.ZIP_PATH }}
           asset_content_type: application/zip
