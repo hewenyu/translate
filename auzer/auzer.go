@@ -16,11 +16,11 @@ type AuzerTranslator struct {
 }
 
 // NewAuzerTranslator 创建一个新的 Auzer 翻译器
-func NewAuzerTranslator(resourceKey string, endpoint string, region string) *AuzerTranslator {
+func NewTranslator(config *AuzerConfig) *AuzerTranslator {
 	return &AuzerTranslator{
-		resourceKey: resourceKey,
-		endpoint:    endpoint,
-		region:      region,
+		resourceKey: config.ResourceKey,
+		endpoint:    config.Endpoint,
+		region:      config.Region,
 		client:      http.DefaultClient,
 	}
 }

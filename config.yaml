@@ -1,0 +1,15 @@
+# 翻译服务类型: qcloud 或 auzer
+translate_type: qcloud
+
+# 腾讯云配置
+qcloud:
+  secret_id: "your-secret-id"
+  secret_key: "your-secret-key"
+  region: "ap-guangzhou"
+  project_id: 0
+
+# Auzer配置
+auzer:
+  api_key: "your-api-key"
+  api_secret: "your-api-secret"
+  endpoint: "https://api.auzer.com" 

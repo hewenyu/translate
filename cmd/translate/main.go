@@ -24,7 +24,11 @@ func main() {
 	}
 
 	// init translator
-	translateFactor := auzer.NewAuzerTranslator(flags.GetKey(), flags.GetEndpoint(), flags.GetRegion())
+	translateFactor := auzer.NewTranslator(&auzer.AuzerConfig{
+		ResourceKey: flags.GetKey(),
+		Endpoint:    flags.GetEndpoint(),
+		Region:      flags.GetRegion(),
+	})
 	srtTranslator := srt.NewSrtTranslator(flags.GetFile(), flags.GetFrom(), flags.GetTo(), translateFactor, true)
 
 	err = srtTranslator.Translate(context.Background())
