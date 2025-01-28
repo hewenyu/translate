@@ -4,84 +4,105 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 )
 
+// AuzerTranslator Azure翻译器
 type AuzerTranslator struct {
-	resourceKey string       // Azure 资源密钥
-	endpoint    string       // Azure 翻译服务的终结点
-	region      string       // Azure 翻译服务的区域
-	client      *http.Client // HTTP 客户端
+	resourceKey string
+	endpoint    string
+	region      string
+	client      *http.Client
 }
 
-// NewAuzerTranslator 创建一个新的 Auzer 翻译器
-func NewAuzerTranslator(resourceKey string, endpoint string, region string) *AuzerTranslator {
-	return &AuzerTranslator{
-		resourceKey: resourceKey,
-		endpoint:    endpoint,
-		region:      region,
-		client:      http.DefaultClient,
+// NewTranslator 创建一个新的 Azure 翻译器
+func NewTranslator(config *AuzerConfig) (*AuzerTranslator, error) {
+	if config.ResourceKey == "" {
+		return nil, fmt.Errorf("resource key is required")
 	}
+	if config.Endpoint == "" {
+		return nil, fmt.Errorf("endpoint is required")
+	}
+	if config.Region == "" {
+		return nil, fmt.Errorf("region is required")
+	}
+
+	return &AuzerTranslator{
+		resourceKey: config.ResourceKey,
+		endpoint:    config.Endpoint,
+		region:      config.Region,
+		client:      &http.Client{},
+	}, nil
 }
 
+// Translate 实现翻译接口
 func (t *AuzerTranslator) Translate(ctx context.Context, text string, sourceLang string, targetLang string) (string, error) {
-	// TODO: 实现翻译逻辑
-	uri := t.endpoint + "/translate?api-version=3.0"
-	// create the query
-
+	uri := t.endpoint + "/translate"
 	u, err := url.Parse(uri)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("parse endpoint URL: %w", err)
 	}
-	q := u.Query()
 
-	q.Add("from", sourceLang)
+	// 设置查询参数
+	q := u.Query()
+	q.Add("api-version", "3.0")
+	if sourceLang != "auto" {
+		q.Add("from", sourceLang)
+	}
 	q.Add("to", targetLang)
 	u.RawQuery = q.Encode()
 
-	// Create an anonymous struct for your request body and encode it to JSON
+	// 准备请求体
 	body := []struct {
-		Text string
-	}{
-		{Text: text},
-	}
-	b, err := json.Marshal(body)
+		Text string `json:"text"`
+	}{{Text: text}}
+
+	jsonBody, err := json.Marshal(body)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("marshal request body: %w", err)
 	}
 
-	// Build the HTTP POST request
-	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), bytes.NewReader(b))
+	// 创建请求
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, u.String(), bytes.NewReader(jsonBody))
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("create request: %w", err)
 	}
 
-	// Add required headers to the request
-	req.Header.Add("Ocp-Apim-Subscription-Key", t.resourceKey)
-	req.Header.Add("Ocp-Apim-Subscription-Region", t.region)
-	req.Header.Add("Content-type", "application/json")
+	// 设置请求头
+	req.Header.Set("Ocp-Apim-Subscription-Key", t.resourceKey)
+	req.Header.Set("Ocp-Apim-Subscription-Region", t.region)
+	req.Header.Set("Content-Type", "application/json")
 
-	// Call the Translator Text API
+	// 发送请求
 	resp, err := t.client.Do(req)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("send request: %w", err)
 	}
-	// Decode the JSON response
+	defer resp.Body.Close()
+
+	// 检查响应状态
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("translation failed with status %d: %s", resp.StatusCode, string(body))
+	}
+
+	// 解析响应
 	var result []struct {
 		Translations []struct {
-			Text string
-		}
-	}
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		return "", err
+			Text string `json:"text"`
+		} `json:"translations"`
 	}
 
-	// return the first translation
-	if len(result) > 0 && len(result[0].Translations) > 0 {
-		return result[0].Translations[0].Text, nil
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return "", fmt.Errorf("decode response: %w", err)
 	}
 
-	return "", nil
+	if len(result) == 0 || len(result[0].Translations) == 0 {
+		return "", fmt.Errorf("empty translation result")
+	}
+
+	return result[0].Translations[0].Text, nil
 }

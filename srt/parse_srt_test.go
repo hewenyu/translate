@@ -13,7 +13,7 @@ import (
 
 // test read srt file
 
-const filePath = "../example/test.srt"
+const filePath = "../test/test_data/test.srt"
 
 const (
 	// Azure 资源密钥
@@ -26,7 +26,11 @@ const (
 
 // test read srt file
 func TestParseSrt(t *testing.T) {
-	translateFactor := auzer.NewAuzerTranslator(resourceKey, endpoint, region)
+	translateFactor, nil := auzer.NewTranslator(&auzer.AuzerConfig{
+		ResourceKey: resourceKey,
+		Endpoint:    endpoint,
+		Region:      region,
+	})
 	srtTranslator := NewSrtTranslator(filePath, "en", "zh", translateFactor, true)
 
 	err := srtTranslator.Translate(context.Background())

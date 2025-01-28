@@ -1,0 +1,48 @@
+# Go build and test files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go workspace file
+go.work
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Project specific files
+config.yaml
+*.log
+/bin/
+/dist/
+/vendor/
+
+# Debug files
+__debug_bin
+debug.test
+
+# Environment files
+.env
+*.env
+.env.local
+
+# Test coverage
+coverage.txt
+coverage.html
+
+# Binary output directory
+/build/
+
+# Temporary files
+*.tmp
+temp/
+tmp/ 
+
+config.yaml
