@@ -3,6 +3,7 @@ package qcloud
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
@@ -44,8 +45,9 @@ func NewTranslator(cfg *QCloudConfig) (*Translator, error) {
 func (t *Translator) Translate(ctx context.Context, text string, sourceLang string, targetLang string) (string, error) {
 	request := tmt.NewTextTranslateRequest()
 	request.SourceText = common.StringPtr(text)
-	request.Source = common.StringPtr(sourceLang)
-	request.Target = common.StringPtr(targetLang)
+	// sourceLang 与 targetLang 强制小写
+	request.Source = common.StringPtr(strings.ToLower(sourceLang))
+	request.Target = common.StringPtr(strings.ToLower(targetLang))
 	request.ProjectId = common.Int64Ptr(t.projectId)
 
 	response, err := t.client.TextTranslateWithContext(ctx, request)

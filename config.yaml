@@ -8,8 +8,8 @@ qcloud:
   region: "ap-guangzhou"
   project_id: 0
 
-# Auzer配置
+# Azure配置
 auzer:
-  api_key: "your-api-key"
-  api_secret: "your-api-secret"
-  endpoint: "https://api.auzer.com" 
+  resource_key: "your-azure-resource-key"
+  endpoint: "https://api.cognitive.microsofttranslator.com/translate"
+  region: "eastasia" 

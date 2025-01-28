@@ -26,7 +26,7 @@ const (
 
 // test read srt file
 func TestParseSrt(t *testing.T) {
-	translateFactor := auzer.NewTranslator(&auzer.AuzerConfig{
+	translateFactor, nil := auzer.NewTranslator(&auzer.AuzerConfig{
 		ResourceKey: resourceKey,
 		Endpoint:    endpoint,
 		Region:      region,

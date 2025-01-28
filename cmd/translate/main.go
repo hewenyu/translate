@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// init translator
-	translateFactor := auzer.NewTranslator(&auzer.AuzerConfig{
+	translateFactor, nil := auzer.NewTranslator(&auzer.AuzerConfig{
 		ResourceKey: flags.GetKey(),
 		Endpoint:    flags.GetEndpoint(),
 		Region:      flags.GetRegion(),
