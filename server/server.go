@@ -69,7 +69,8 @@ func (s *Server) handleTranslate(c *gin.Context) {
 	}
 
 	// 生成随机ID
-	rand.Seed(time.Now().UnixNano())
+	rand.New(rand.NewSource(time.Now().UnixNano()))
+
 	id := rand.Int63n(9999999999-1000000000) + 1000000000
 
 	// 返回响应
