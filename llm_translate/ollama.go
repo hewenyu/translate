@@ -30,12 +30,18 @@ type OllamaTranslate struct {
 }
 
 // NewOllamaTranslate 创建一个OllamaTranslate
-func NewOllamaTranslate(provider llm.Provider) *OllamaTranslate {
-	return &OllamaTranslate{Provider: provider}
+func NewOllamaTranslate(endpoint string) (*OllamaTranslate, error) {
+	provider, err := CreateOllamaProvider(endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("create ollama provider: %w", err)
+	}
+	return &OllamaTranslate{
+		Provider: provider,
+	}, nil
 }
 
 // Translate 翻译
-func (t *OllamaTranslate) Translate(ctx context.Context, text string, sourceLang LangsCode, targetLang LangsCode) (string, error) {
+func (t *OllamaTranslate) Translate(ctx context.Context, text string, sourceLang string, targetLang string) (string, error) {
 	// check model
 	exist, err := t.checkModel(ctx)
 	if err != nil {
@@ -48,7 +54,7 @@ func (t *OllamaTranslate) Translate(ctx context.Context, text string, sourceLang
 	// 其他使用 qwen2.5
 	var model string
 	var req llm.ChatRequest
-	if sourceLang == LangsCodeJa && targetLang == LangsCodeZh {
+	if LangsCode(sourceLang) == LangsCodeJa && LangsCode(targetLang) == LangsCodeZh {
 		model = modelJapaneseToChinese
 		req = llm.ChatRequest{
 			Messages: []llm.Message{
@@ -58,7 +64,7 @@ func (t *OllamaTranslate) Translate(ctx context.Context, text string, sourceLang
 	} else {
 		model = modelOther
 		// build prompt
-		prompt := t.buildPrompt(text, sourceLang, targetLang)
+		prompt := t.buildPrompt(text, LangsCode(sourceLang), LangsCode(targetLang))
 		req = llm.ChatRequest{
 			Messages: []llm.Message{
 				{Role: "user", Content: prompt},

@@ -5,6 +5,7 @@ import (
 
 	"github.com/hewenyu/translate/auzer"
 	com "github.com/hewenyu/translate/common"
+	llmtranslate "github.com/hewenyu/translate/llm_translate"
 	"github.com/hewenyu/translate/qcloud"
 )
 
@@ -15,6 +16,8 @@ func CreateTranslator(cfg *com.Config) (Translator, error) {
 		return qcloud.NewTranslator(&cfg.QCloud)
 	case com.AuzerTranslate:
 		return auzer.NewTranslator(&cfg.Auzer)
+	case com.OllamaTranslate:
+		return llmtranslate.NewOllamaTranslate(cfg.Ollama.Endpoint)
 	default:
 		return nil, fmt.Errorf("unsupported translate type: %s", cfg.TranslateType)
 	}

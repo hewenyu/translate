@@ -6,16 +6,16 @@ import (
 )
 
 func TestOllamaTranslate(t *testing.T) {
-	provider, err := CreateOllamaProvider(ollamaEndpoint)
+
+	translate, err := NewOllamaTranslate(ollamaEndpoint)
 	if err != nil {
 		t.Fatal(err)
 	}
-	translate := NewOllamaTranslate(provider)
 
 	text := "こんにちは、世界！"
 	sourceLang := LangsCodeJa
 	targetLang := LangsCodeZh
-	result, err := translate.Translate(context.Background(), text, sourceLang, targetLang)
+	result, err := translate.Translate(context.Background(), text, string(sourceLang), string(targetLang))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,16 +23,16 @@ func TestOllamaTranslate(t *testing.T) {
 }
 
 func TestOllamaTranslate2(t *testing.T) {
-	provider, err := CreateOllamaProvider(ollamaEndpoint)
+
+	translate, err := NewOllamaTranslate(ollamaEndpoint)
 	if err != nil {
 		t.Fatal(err)
 	}
-	translate := NewOllamaTranslate(provider)
 
 	text := "Hello, world!"
 	sourceLang := LangsCodeEn
 	targetLang := LangsCodeZh
-	result, err := translate.Translate(context.Background(), text, sourceLang, targetLang)
+	result, err := translate.Translate(context.Background(), text, string(sourceLang), string(targetLang))
 	if err != nil {
 		t.Fatal(err)
 	}

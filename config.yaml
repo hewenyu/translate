@@ -1,5 +1,5 @@
 # 翻译服务类型: qcloud 或 auzer
-translate_type: qcloud
+translate_type: ollama
 
 # 腾讯云配置
 qcloud:
@@ -13,3 +13,8 @@ auzer:
   resource_key: "your-azure-resource-key"
   endpoint: "https://api.cognitive.microsofttranslator.com/translate"
   region: "eastasia" 
+
+# ollama配置
+ollama:
+  endpoint: "http://localhost:11434"
+
