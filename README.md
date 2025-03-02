@@ -7,6 +7,7 @@
 - 支持多种翻译服务
   - 腾讯云翻译 (qcloud)
   - Azure 翻译服务 (auzer)
+  - Ollama (ollama)
 - RESTful API 接口
 - 统一的配置管理
 - 支持自动语言检测
@@ -33,6 +34,9 @@ auzer:
   resource_key: "your-azure-resource-key"
   endpoint: "https://api.cognitive.microsofttranslator.com/translate"
   region: "eastasia"
+
+ollama:
+  endpoint: "http://localhost:11434"
 ```
 
 3. 启动服务器：
@@ -79,6 +83,8 @@ curl -X POST http://localhost:1188/translate \
   - `resource_key`: Azure 资源密钥
   - `endpoint`: 服务端点
   - `region`: 服务地区
+- `ollama`: Ollama 配置
+  - `endpoint`: Ollama 端点
 
 ## 开发
 
