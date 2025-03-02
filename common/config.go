@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/hewenyu/translate/auzer"
+	llmtranslate "github.com/hewenyu/translate/llm_translate"
 	"github.com/hewenyu/translate/qcloud"
 	"gopkg.in/yaml.v3"
 )
@@ -15,13 +16,15 @@ type TranslateType string
 const (
 	QCloudTranslate TranslateType = "qcloud" // 腾讯云翻译
 	AuzerTranslate  TranslateType = "auzer"  // Auzer翻译
+	OllamaTranslate TranslateType = "ollama" // Ollama翻译
 )
 
 // Config 配置结构
 type Config struct {
-	TranslateType TranslateType       `yaml:"translate_type"` // 使用的翻译服务
-	QCloud        qcloud.QCloudConfig `yaml:"qcloud"`         // 腾讯云配置
-	Auzer         auzer.AuzerConfig   `yaml:"auzer"`          // Auzer配置
+	TranslateType TranslateType             `yaml:"translate_type"` // 使用的翻译服务
+	QCloud        qcloud.QCloudConfig       `yaml:"qcloud"`         // 腾讯云配置
+	Auzer         auzer.AuzerConfig         `yaml:"auzer"`          // Auzer配置
+	Ollama        llmtranslate.OllamaConfig `yaml:"ollama"`         // Ollama配置
 }
 
 // LoadConfig 从文件加载配置
